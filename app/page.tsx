@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -24,18 +24,24 @@ export default function Home() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-blue-50 rounded-lg p-6">
-            <h3 className="text-xl font-semibold text-blue-800 mb-3">Escape Room</h3>
-            <p className="text-gray-600">Interactive puzzle-based learning experience</p>
-          </div>
-          <div className="bg-green-50 rounded-lg p-6">
-            <h3 className="text-xl font-semibold text-green-800 mb-3">Coding Races</h3>
-            <p className="text-gray-600">Competitive programming challenges</p>
-          </div>
-          <div className="bg-purple-50 rounded-lg p-6">
-            <h3 className="text-xl font-semibold text-purple-800 mb-3">Court Room</h3>
-            <p className="text-gray-600">Simulated legal proceedings</p>
-          </div>
+          <Link href="/escape-room" className="block">
+            <div className="bg-blue-50 rounded-lg p-6 hover:bg-blue-100 transition-colors cursor-pointer">
+              <h3 className="text-xl font-semibold text-blue-800 mb-3">Escape Room</h3>
+              <p className="text-gray-600">Interactive puzzle-based learning experience</p>
+            </div>
+          </Link>
+          <Link href="/coding-races" className="block">
+            <div className="bg-green-50 rounded-lg p-6 hover:bg-green-100 transition-colors cursor-pointer">
+              <h3 className="text-xl font-semibold text-green-800 mb-3">Coding Races</h3>
+              <p className="text-gray-600">Competitive programming challenges</p>
+            </div>
+          </Link>
+          <Link href="/court-room" className="block">
+            <div className="bg-purple-50 rounded-lg p-6 hover:bg-purple-100 transition-colors cursor-pointer">
+              <h3 className="text-xl font-semibold text-purple-800 mb-3">Court Room</h3>
+              <p className="text-gray-600">Simulated legal proceedings</p>
+            </div>
+          </Link>
         </div>
       </div>
     </div>
