@@ -44,6 +44,9 @@ const Header: React.FC = () => {
           <Link href="/main_pages/coding-races" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 font-semibold hover:scale-105">
             Coding Races
           </Link>
+          <Link href="/cookies" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 font-semibold hover:scale-105">
+            Cookies
+          </Link>
           <Link href="/main_pages/about" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 font-semibold hover:scale-105">
             About
           </Link>
@@ -112,6 +115,13 @@ const Header: React.FC = () => {
             className="block text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 font-semibold py-3 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg px-4"
           >
             Coding Races
+          </Link>
+          <Link 
+            href="/cookies" 
+            onClick={closeMenu}
+            className="block text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 font-semibold py-3 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg px-4"
+          >
+            Cookies
           </Link>
           <Link 
             href="/main_pages/about" 
