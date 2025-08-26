@@ -33,13 +33,36 @@ export default function CookiesPage() {
   const [allCookies, setAllCookies] = useState<string[]>([]);
   const [message, setMessage] = useState('');
   const [consentStatus, setConsentStatus] = useState<string>('');
+  const [breadcrumbHistory, setBreadcrumbHistory] = useState<string[]>([]);
 
   // Load all cookies on component mount
   useEffect(() => {
     loadAllCookies();
     const consent = localStorage.getItem('cookieConsent');
     setConsentStatus(consent || 'not-set');
+    
+    // Load breadcrumb history from localStorage
+    const savedHistory = localStorage.getItem('breadcrumbHistory');
+    if (savedHistory) {
+      try {
+        setBreadcrumbHistory(JSON.parse(savedHistory));
+      } catch (error) {
+        console.error('Error parsing breadcrumb history:', error);
+      }
+    }
   }, []);
+
+  const addToBreadcrumbHistory = (page: string) => {
+    const newHistory = [...breadcrumbHistory, page];
+    setBreadcrumbHistory(newHistory);
+    localStorage.setItem('breadcrumbHistory', JSON.stringify(newHistory));
+  };
+
+  const clearBreadcrumbHistory = () => {
+    setBreadcrumbHistory([]);
+    localStorage.removeItem('breadcrumbHistory');
+    setMessage('Breadcrumb history cleared!');
+  };
 
   const loadAllCookies = () => {
     const cookies = document.cookie.split(';').map(cookie => cookie.trim());
@@ -308,6 +331,88 @@ export default function CookiesPage() {
                   </li>
                 </ul>
               </div>
+            </div>
+          </div>
+
+          {/* Breadcrumb History Section */}
+          <div className="mt-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center mr-4">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Breadcrumb Navigation History
+                </h2>
+              </div>
+              <button
+                onClick={clearBreadcrumbHistory}
+                className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                Clear History
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => addToBreadcrumbHistory('Home')}
+                  className="px-4 py-2 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium hover:bg-blue-200 dark:hover:bg-blue-900/40 transition-colors duration-200"
+                >
+                  Add Home
+                </button>
+                <button
+                  onClick={() => addToBreadcrumbHistory('Tabs Generator')}
+                  className="px-4 py-2 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded-lg text-sm font-medium hover:bg-green-200 dark:hover:bg-green-900/40 transition-colors duration-200"
+                >
+                  Add Tabs
+                </button>
+                <button
+                  onClick={() => addToBreadcrumbHistory('About')}
+                  className="px-4 py-2 bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 rounded-lg text-sm font-medium hover:bg-purple-200 dark:hover:bg-purple-900/40 transition-colors duration-200"
+                >
+                  Add About
+                </button>
+                <button
+                  onClick={() => addToBreadcrumbHistory('Cookie Management')}
+                  className="px-4 py-2 bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 rounded-lg text-sm font-medium hover:bg-orange-200 dark:hover:bg-orange-900/40 transition-colors duration-200"
+                >
+                  Add Cookies
+                </button>
+              </div>
+
+              {breadcrumbHistory.length === 0 ? (
+                <p className="text-gray-500 dark:text-gray-400 text-center py-8">
+                  No breadcrumb history yet. Click the buttons above to add pages to your navigation history.
+                </p>
+              ) : (
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                    Your Navigation Path:
+                  </h3>
+                  <div className="flex items-center flex-wrap gap-2">
+                    {breadcrumbHistory.map((page, index) => (
+                      <div key={index} className="flex items-center">
+                        <span className="px-3 py-1 bg-white dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-500">
+                          {page}
+                        </span>
+                        {index < breadcrumbHistory.length - 1 && (
+                          <svg 
+                            className="w-4 h-4 text-gray-400 dark:text-gray-500 mx-2" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
