@@ -81,7 +81,7 @@ export default function About() {
                 The application supports various HTML5 components including tabs, carousels, accordions, modals, and more.
               </p>
               <p>
-                The generated code includes <span className="font-semibold text-green-600 dark:text-green-400">inline CSS and JavaScript</span>, making it compatible with MOODLE's HTML5 capabilities 
+                The generated code includes <span className="font-semibold text-green-600 dark:text-green-400">inline CSS and JavaScript</span>, making it compatible with MOODLE&apos;s HTML5 capabilities 
                 without requiring external CSS classes or files.
               </p>
               <p>

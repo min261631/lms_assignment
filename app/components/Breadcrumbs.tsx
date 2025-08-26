@@ -36,8 +36,6 @@ export default function Breadcrumbs() {
         label = 'Escape Room';
       } else if (path === 'coding-races') {
         label = 'Coding Races';
-      } else if (path === 'cookies') {
-        label = 'Cookie Management';
       } else {
         // Capitalize first letter and replace hyphens with spaces
         label = path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, ' ');
