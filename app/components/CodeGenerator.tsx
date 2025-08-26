@@ -9,12 +9,30 @@ interface TabConfig {
   content: string;
 }
 
+// Cookie utility functions
+const setCookie = (name: string, value: string, days: number = 7) => {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+};
+
+const getCookie = (name: string): string | null => {
+  const nameEQ = name + "=";
+  const ca = document.cookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+};
+
 export default function CodeGenerator() {
-  const { resolvedTheme } = useTheme();
+  const { theme } = useTheme();
   const [tabs, setTabs] = useState<TabConfig[]>([
-    { id: 'tab1', title: 'Step 1', content: 'This is the content for Step 1.' },
-    { id: 'tab2', title: 'Step 2', content: 'This is the content for Step 2.' },
-    { id: 'tab3', title: 'Step 3', content: 'This is the content for Step 3.' }
+    { id: 'tab1', title: 'Tab 1', content: 'This is the content for Tab 1.' },
+    { id: 'tab2', title: 'Tab 2', content: 'This is the content for Tab 2.' },
+    { id: 'tab3', title: 'Tab 3', content: 'This is the content for Tab 3.' }
   ]);
   const [activeTab, setActiveTab] = useState('tab1');
   const [generatedCode, setGeneratedCode] = useState('');
@@ -23,18 +41,38 @@ export default function CodeGenerator() {
   useEffect(() => {
     const savedTabs = localStorage.getItem('tabs');
     if (savedTabs) {
-      const parsedTabs = JSON.parse(savedTabs);
-      setTabs(parsedTabs);
-      if (parsedTabs.length > 0) {
-        setActiveTab(parsedTabs[0].id);
+      try {
+        const parsedTabs = JSON.parse(savedTabs);
+        setTabs(parsedTabs);
+      } catch (error) {
+        console.error('Error parsing saved tabs:', error);
       }
     }
   }, []);
+
+  // Load active tab from cookie on component mount
+  useEffect(() => {
+    const consent = localStorage.getItem('cookieConsent');
+    if (consent === 'accepted') {
+      const savedActiveTab = getCookie('activeTab');
+      if (savedActiveTab && tabs.some(tab => tab.id === savedActiveTab)) {
+        setActiveTab(savedActiveTab);
+      }
+    }
+  }, [tabs]);
 
   // Save tabs to localStorage whenever tabs change
   useEffect(() => {
     localStorage.setItem('tabs', JSON.stringify(tabs));
   }, [tabs]);
+
+  // Save active tab to cookie whenever activeTab changes
+  useEffect(() => {
+    const consent = localStorage.getItem('cookieConsent');
+    if (consent === 'accepted') {
+      setCookie('activeTab', activeTab, 30); // Save for 30 days
+    }
+  }, [activeTab]);
 
   const generateHTMLCode = () => {
     const htmlCode = `<!DOCTYPE html>
