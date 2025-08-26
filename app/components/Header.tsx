@@ -3,12 +3,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { useTheme } from '../contexts/ThemeContext';
+import ThemeSelector from './ThemeSelector';
 
 const Header: React.FC = () => {
-  const { theme, toggleTheme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
   return (
-    <header className="bg-white border-b border-gray-200 shadow-lg">
+    <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-lg transition-colors duration-200">
       <div className="container mx-auto flex justify-between items-center px-8 py-6">
         <div className="flex items-center space-x-6">
           <div className="flex items-center space-x-3">
@@ -17,39 +18,33 @@ const Header: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <span className="text-lg font-bold bg-gradient-to-r from-gray-900 to-blue-900 bg-clip-text text-transparent">
+            <span className="text-lg font-bold text-gray-900 dark:bg-gradient-to-r dark:from-white dark:via-blue-200 dark:to-indigo-200 dark:bg-clip-text dark:text-transparent">
               CodeGen Pro
             </span>
           </div>
-          <span className="text-sm font-semibold bg-gradient-to-r from-gray-100 to-blue-50 text-gray-700 px-4 py-2 rounded-xl border border-gray-200 shadow-sm">
+          <span className="text-sm font-semibold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm">
             Student #: 12345678
           </span>
         </div>
         <nav className="hidden md:flex space-x-8" role="navigation" aria-label="Main navigation">
-          <Link href="/" className="text-gray-700 hover:text-blue-600 transition-all duration-200 font-semibold hover:scale-105">
+          <Link href="/" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 font-semibold hover:scale-105">
             Home
           </Link>
-          <Link href="/main_pages/tabs" className="text-gray-700 hover:text-blue-600 transition-all duration-200 font-semibold hover:scale-105">
+          <Link href="/main_pages/tabs" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 font-semibold hover:scale-105">
             Tabs
           </Link>
-          <Link href="/main_pages/escape-room" className="text-gray-700 hover:text-blue-600 transition-all duration-200 font-semibold hover:scale-105">
+          <Link href="/main_pages/escape-room" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 font-semibold hover:scale-105">
             Escape Room
           </Link>
-          <Link href="/main_pages/coding-races" className="text-gray-700 hover:text-blue-600 transition-all duration-200 font-semibold hover:scale-105">
+          <Link href="/main_pages/coding-races" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 font-semibold hover:scale-105">
             Coding Races
           </Link>
-          <Link href="/main_pages/about" className="text-gray-700 hover:text-blue-600 transition-all duration-200 font-semibold hover:scale-105">
+          <Link href="/main_pages/about" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 font-semibold hover:scale-105">
             About
           </Link>
         </nav>
         <div className="flex items-center space-x-4">
-          <button
-            onClick={toggleTheme}
-            className="bg-gradient-to-r from-gray-100 to-blue-50 hover:from-gray-200 hover:to-blue-100 text-gray-700 px-4 py-2 rounded-xl border border-gray-200 transition-all duration-200 font-semibold text-sm shadow-sm hover:shadow-md"
-            aria-label="Toggle dark mode"
-          >
-            {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
-          </button>
+          <ThemeSelector />
         </div>
       </div>
     </header>

@@ -3,11 +3,11 @@ import Link from 'next/link';
 
 const Navigation: React.FC = () => {
   return (
-    <nav className="md:hidden bg-white border-t border-gray-200 text-gray-700 fixed bottom-0 left-0 right-0 z-50 shadow-2xl" role="navigation" aria-label="Mobile navigation">
+    <nav className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 fixed bottom-0 left-0 right-0 z-50 shadow-2xl transition-colors duration-200" role="navigation" aria-label="Mobile navigation">
       <div className="flex justify-around items-center p-6">
         <Link 
           href="/" 
-          className="flex flex-col items-center p-3 text-xs hover:text-blue-600 transition-all duration-200 group"
+          className="flex flex-col items-center p-3 text-xs hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 group"
           aria-label="Home page"
         >
           <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200 shadow-lg">
@@ -19,7 +19,7 @@ const Navigation: React.FC = () => {
         </Link>
         <Link 
           href="/main_pages/tabs" 
-          className="flex flex-col items-center p-3 text-xs hover:text-blue-600 transition-all duration-200 group"
+          className="flex flex-col items-center p-3 text-xs hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 group"
           aria-label="Tabs page"
         >
           <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200 shadow-lg">
@@ -31,7 +31,7 @@ const Navigation: React.FC = () => {
         </Link>
         <Link 
           href="/main_pages/escape-room" 
-          className="flex flex-col items-center p-3 text-xs hover:text-blue-600 transition-all duration-200 group"
+          className="flex flex-col items-center p-3 text-xs hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 group"
           aria-label="Escape Room page"
         >
           <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200 shadow-lg">
@@ -43,7 +43,7 @@ const Navigation: React.FC = () => {
         </Link>
         <Link 
           href="/main_pages/coding-races" 
-          className="flex flex-col items-center p-3 text-xs hover:text-blue-600 transition-all duration-200 group"
+          className="flex flex-col items-center p-3 text-xs hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 group"
           aria-label="Coding Races page"
         >
           <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200 shadow-lg">
@@ -55,7 +55,7 @@ const Navigation: React.FC = () => {
         </Link>
         <Link 
           href="/main_pages/about" 
-          className="flex flex-col items-center p-3 text-xs hover:text-blue-600 transition-all duration-200 group"
+          className="flex flex-col items-center p-3 text-xs hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 group"
           aria-label="About page"
         >
           <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-2xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200 shadow-lg">

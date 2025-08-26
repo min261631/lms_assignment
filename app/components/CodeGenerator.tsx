@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface TabConfig {
   id: string;
@@ -9,6 +10,7 @@ interface TabConfig {
 }
 
 export default function CodeGenerator() {
+  const { resolvedTheme } = useTheme();
   const [tabs, setTabs] = useState<TabConfig[]>([
     { id: 'tab1', title: 'Step 1', content: 'This is the content for Step 1.' },
     { id: 'tab2', title: 'Step 2', content: 'This is the content for Step 2.' },
@@ -174,7 +176,7 @@ export default function CodeGenerator() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-200">
       <div className="container mx-auto px-6 py-12">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
@@ -184,10 +186,10 @@ export default function CodeGenerator() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent mb-6">
+            <h1 className="text-5xl font-bold text-gray-900 dark:bg-gradient-to-r dark:from-white dark:via-blue-200 dark:to-indigo-200 dark:bg-clip-text dark:text-transparent mb-6">
               Professional Tabs Generator
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
               Create enterprise-grade tabbed interfaces with inline CSS and JavaScript. 
               Perfect for professional applications and seamless MOODLE LMS integration.
             </p>
@@ -195,7 +197,7 @@ export default function CodeGenerator() {
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Tabs Headers Section */}
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 hover:shadow-2xl transition-shadow duration-300">
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8 hover:shadow-2xl transition-shadow duration-300">
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center mr-4">
@@ -203,7 +205,7 @@ export default function CodeGenerator() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                     Tab Headers
                   </h2>
                 </div>
@@ -224,7 +226,7 @@ export default function CodeGenerator() {
                       className={`flex-1 text-left px-6 py-4 rounded-xl border-2 transition-all duration-200 font-semibold ${
                         activeTab === tab.id 
                           ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-600 shadow-lg transform scale-105' 
-                          : 'bg-gray-50 text-gray-700 border-gray-200 hover:border-blue-300 hover:bg-blue-50 hover:shadow-md'
+                          : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:shadow-md'
                       }`}
                     >
                       {tab.title}
@@ -245,14 +247,14 @@ export default function CodeGenerator() {
             </div>
 
             {/* Tabs Content Section */}
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 hover:shadow-2xl transition-shadow duration-300">
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8 hover:shadow-2xl transition-shadow duration-300">
               <div className="flex items-center mb-8">
                 <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mr-4">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                   Tab Content
                 </h2>
               </div>
@@ -260,27 +262,27 @@ export default function CodeGenerator() {
               {tabs.map((tab, index) => (
                 <div key={tab.id} className={`${activeTab === tab.id ? 'block' : 'hidden'}`}>
                   <div className="mb-8">
-                    <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">
                       Tab Title
                     </label>
                     <input
                       type="text"
                       value={tab.title}
                       onChange={(e) => updateTab(index, 'title', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 font-medium shadow-sm"
+                      className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 dark:text-white bg-white dark:bg-gray-700 font-medium shadow-sm"
                       placeholder="Enter tab title..."
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">
                       Tab Content
                     </label>
                     <textarea
                       value={tab.content}
                       onChange={(e) => updateTab(index, 'content', e.target.value)}
                       rows={12}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 resize-vertical shadow-sm"
+                      className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 dark:text-white bg-white dark:bg-gray-700 resize-vertical shadow-sm"
                       placeholder="Enter tab content..."
                     />
                   </div>
@@ -289,7 +291,7 @@ export default function CodeGenerator() {
             </div>
 
             {/* Output Section */}
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 hover:shadow-2xl transition-shadow duration-300">
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8 hover:shadow-2xl transition-shadow duration-300">
               <div className="flex justify-between items-center mb-8">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mr-4">
@@ -297,7 +299,7 @@ export default function CodeGenerator() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                     </svg>
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                     Output
                   </h2>
                 </div>
@@ -318,7 +320,7 @@ export default function CodeGenerator() {
                     Copy to Clipboard
                   </button>
                   
-                  <div className="border-2 border-gray-200 rounded-xl overflow-hidden shadow-lg">
+                  <div className="border-2 border-gray-200 dark:border-gray-600 rounded-xl overflow-hidden shadow-lg">
                     <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white px-6 py-4 text-sm font-semibold">
                       Generated HTML5 Code
                     </div>
