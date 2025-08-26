@@ -1,6 +1,6 @@
 'use client';
 
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export default function About() {
   const { theme } = useTheme();
@@ -205,4 +205,3 @@ export default function About() {
     </div>
   );
 }
-

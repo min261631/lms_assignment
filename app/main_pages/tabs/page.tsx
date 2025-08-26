@@ -1,4 +1,4 @@
-import CodeGenerator from '../components/CodeGenerator';
+import CodeGenerator from '../../components/CodeGenerator';
 
 export default function TabsPage() {
   return <CodeGenerator />;
