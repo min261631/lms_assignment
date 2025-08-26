@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
-/* Force light mode when dark class is not present */
+/* ==========================================================================
+   GLOBAL CSS STYLES
+   ========================================================================== */
+
+/* Light Mode Styles */
 html:not(.dark) {
   color-scheme: light;
 }
@@ -62,7 +66,7 @@ html:not(.dark) .border-gray-100 {
   border-color: #f3f4f6 !important;
 }
 
-/* Header specific light mode styles */
+/* Header Styles */
 html:not(.dark) header {
   background-color: #ffffff !important;
   border-bottom-color: #e5e7eb !important;
@@ -80,7 +84,7 @@ html:not(.dark) header .text-gray-700 {
   color: #374151 !important;
 }
 
-/* Light gradient background styles */
+/* Gradient Backgrounds */
 html:not(.dark) .bg-gradient-to-br.from-slate-50.via-blue-50.to-indigo-50 {
   background: linear-gradient(to bottom right, #f8fafc, #dbeafe, #e0e7ff) !important;
 }
@@ -89,7 +93,7 @@ html:not(.dark) .min-h-screen.bg-gradient-to-br.from-slate-50.via-blue-50.to-ind
   background: linear-gradient(to bottom right, #f8fafc, #dbeafe, #e0e7ff) !important;
 }
 
-/* Dark mode styles */
+/* Dark Mode Styles */
 html.dark {
   color-scheme: dark;
 }
@@ -99,18 +103,18 @@ html.dark body {
   color: #ffffff !important;
 }
 
+/* Base Styles */
 body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   line-height: 1.6;
 }
 
-/* Accessibility improvements */
+/* Accessibility */
 :focus {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
 
-/* Skip to content link for screen readers */
 .skip-link {
   position: absolute;
   top: -40px;
@@ -127,7 +131,7 @@ body {
   top: 6px;
 }
 
-/* High contrast mode support */
+/* High Contrast Mode */
 @media (prefers-contrast: high) {
   .bg-blue-600 {
     background-color: #1e40af !important;
@@ -142,7 +146,7 @@ body {
   }
 }
 
-/* Reduced motion support */
+/* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;

@@ -2,35 +2,37 @@
 
 import Link from "next/link";
 
+/**
+ * Homepage Component : main landing page for the La Trobe University LMS application.
+ */
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-200">
       <div className="container mx-auto px-6 py-16">
         <div className="max-w-7xl mx-auto">
+          
           {/* Hero Section */}
           <div className="text-center mb-20">
-
             <h1 className="text-6xl font-bold text-gray-900 dark:bg-gradient-to-r dark:from-white dark:via-blue-200 dark:to-indigo-200 dark:bg-clip-text dark:text-transparent mb-8">
               La Trobe University LMS 
             </h1>
-
           </div>
 
           {/* Features Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
 
-                     <Link href="/main_pages/tabs" className="group">
-               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group-hover:border-blue-200 dark:group-hover:border-blue-700 border border-gray-200 dark:border-gray-700">
-                 <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                   </svg>
-                 </div>
-                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                   Generate Tabs
-                 </h3>
+            <Link href="/main_pages/tabs" className="group">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group-hover:border-blue-200 dark:group-hover:border-blue-700 border border-gray-200 dark:border-gray-700">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  Generate Tabs
+                </h3>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                Create interactive tab layouts and get the ready made customized code
+                  Create interactive tab layouts and get the ready made customized code
                 </p>
               </div>
             </Link>
@@ -83,10 +85,9 @@ export default function Home() {
               </div>
             </Link>
 
-
           </div>
 
-          {/* Bottom CTA */}
+          {/* CTA Section */}
           <div className="text-center">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 rounded-3xl p-12 text-white shadow-2xl">
               <h3 className="text-3xl font-bold mb-6">Ready to Create Professional Content?</h3>
