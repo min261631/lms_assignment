@@ -35,7 +35,7 @@ export default function About() {
                   </svg>
                 </div>
                 <strong className="text-gray-900 dark:text-white font-semibold">Name:</strong>
-                <p className="text-gray-600 dark:text-gray-300 mt-2 font-medium">John Doe</p>
+                <p className="text-gray-600 dark:text-gray-300 mt-2 font-medium">Mihini Ranasinghe</p>
               </div>
               <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 border border-gray-200 dark:border-gray-600">
                 <div className="text-green-600 dark:text-green-400 mb-3">

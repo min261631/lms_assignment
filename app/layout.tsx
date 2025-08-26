@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Navigation from "./components/Navigation";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import ThemeInitializer from "./components/ThemeInitializer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,39 +29,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var theme = localStorage.getItem('theme') || 'light';
-                  var root = document.documentElement;
-                  
-                  if (theme === 'system') {
-                    var systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                    if (systemTheme === 'dark') {
-                      root.classList.add('dark');
-                    } else {
-                      root.classList.remove('dark');
-                    }
-                  } else if (theme === 'dark') {
-                    root.classList.add('dark');
-                  } else {
-                    root.classList.remove('dark');
-                  }
-                } catch (e) {
-                  console.log('Theme script error:', e);
-                }
-              })();
-            `,
-          }}
-        />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-200`}
       >
         <ThemeProvider>
+          <ThemeInitializer />
           <a href="#main-content" className="skip-link">
             Skip to main content
           </a>
