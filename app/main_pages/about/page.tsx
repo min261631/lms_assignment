@@ -67,30 +67,6 @@ export default function About() {
             </div>
           </div>
 
-          {/* Project Description */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 mb-12 transition-colors duration-200">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center flex items-center justify-center">
-              <svg className="w-6 h-6 mr-3 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              Project Description
-            </h2>
-            <div className="space-y-6 text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-              <p>
-                This web application is designed to generate <span className="font-semibold text-blue-600 dark:text-blue-400">HTML5 + JavaScript code</span> that can be deployed on MOODLE LMS. 
-                The application supports various HTML5 components including tabs, carousels, accordions, modals, and more.
-              </p>
-              <p>
-                The generated code includes <span className="font-semibold text-green-600 dark:text-green-400">inline CSS and JavaScript</span>, making it compatible with MOODLE&apos;s HTML5 capabilities 
-                without requiring external CSS classes or files.
-              </p>
-              <p>
-                Features include <span className="font-semibold text-purple-600 dark:text-purple-400">dark/light theme support</span>, accessibility compliance, and responsive design for optimal 
-                user experience across different devices.
-              </p>
-            </div>
-          </div>
-
           {/* Video Tutorial */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 mb-12 transition-colors duration-200">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center flex items-center justify-center">
@@ -111,96 +87,7 @@ export default function About() {
             </div>
           </div>
 
-          {/* Features List */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 transition-colors duration-200">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center flex items-center justify-center">
-              <svg className="w-6 h-6 mr-3 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Key Features
-            </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 border border-gray-200 dark:border-gray-600">
-                <div className="text-blue-600 dark:text-blue-400 mb-4">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z" />
-                  </svg>
-                </div>
-                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                  HTML5 Components
-                </h4>
-                <p className="text-gray-600 dark:text-gray-300">
-                  Generate tabs, carousels, accordions, modals, and more with inline CSS and JavaScript.
-                </p>
-              </div>
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 border border-gray-200 dark:border-gray-600">
-                <div className="text-green-600 dark:text-green-400 mb-4">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                  </svg>
-                </div>
-                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                  Dark/Light Theme
-                </h4>
-                <p className="text-gray-600 dark:text-gray-300">
-                  Toggle between dark and light themes with automatic system preference detection.
-                </p>
-              </div>
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 border border-gray-200 dark:border-gray-600">
-                <div className="text-purple-600 dark:text-purple-400 mb-4">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                  Accessibility
-                </h4>
-                <p className="text-gray-600 dark:text-gray-300">
-                  Built with accessibility standards in mind, including ARIA labels and keyboard navigation.
-                </p>
-              </div>
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 border border-gray-200 dark:border-gray-600">
-                <div className="text-orange-600 dark:text-orange-400 mb-4">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                  Responsive Design
-                </h4>
-                <p className="text-gray-600 dark:text-gray-300">
-                  Fully responsive design that works seamlessly across desktop, tablet, and mobile devices.
-                </p>
-              </div>
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 border border-gray-200 dark:border-gray-600">
-                <div className="text-red-600 dark:text-red-400 mb-4">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                  Cookie Support
-                </h4>
-                <p className="text-gray-600 dark:text-gray-300">
-                  Remembers user preferences including theme selection and menu state.
-                </p>
-              </div>
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 border border-gray-200 dark:border-gray-600">
-                <div className="text-indigo-600 dark:text-indigo-400 mb-4">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                  Copy to Clipboard
-                </h4>
-                <p className="text-gray-600 dark:text-gray-300">
-                  One-click copy functionality for generated HTML code with instant deployment capability.
-                </p>
-              </div>
-            </div>
           </div>
-        </div>
       </div>
     </div>
   );
