@@ -146,6 +146,18 @@ export default function CodeGenerator() {
     }
   };
 
+  const downloadHTMLFile = () => {
+    const blob = new Blob([generatedCode], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'tabs-component.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const updateTab = (index: number, field: keyof TabConfig, value: string) => {
     const newTabs = [...tabs];
     newTabs[index] = { ...newTabs[index], [field]: value };
@@ -195,7 +207,7 @@ export default function CodeGenerator() {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-2 gap-8">
             {/* Tabs Headers Section */}
             <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8 hover:shadow-2xl transition-shadow duration-300">
               <div className="flex items-center justify-between mb-8">
@@ -289,48 +301,60 @@ export default function CodeGenerator() {
                 </div>
               ))}
             </div>
+          </div>
 
-            {/* Output Section */}
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8 hover:shadow-2xl transition-shadow duration-300">
-              <div className="flex justify-between items-center mb-8">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mr-4">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                    </svg>
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                    Output
-                  </h2>
+          {/* Spacing between sections */}
+          <div className="h-12"></div>
+
+          {/* Output Section - Below Tab Sections */}
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8 hover:shadow-2xl transition-shadow duration-300">
+            <div className="flex justify-between items-center mb-8">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mr-4">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
                 </div>
-                <button
-                  onClick={generateHTMLCode}
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
-                >
-                  Generate Code
-                </button>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Output
+                </h2>
               </div>
-              
-              {generatedCode && (
-                <div className="space-y-6">
+              <button
+                onClick={generateHTMLCode}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                Generate Code
+              </button>
+            </div>
+            
+            {generatedCode && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
                   <button
                     onClick={copyToClipboard}
-                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+                    className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
                   >
                     Copy to Clipboard
                   </button>
                   
-                  <div className="border-2 border-gray-200 dark:border-gray-600 rounded-xl overflow-hidden shadow-lg">
-                    <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white px-6 py-4 text-sm font-semibold">
-                      Generated HTML5 Code
-                    </div>
-                    <pre className="bg-gray-900 p-6 text-sm overflow-auto max-h-96 text-green-400 font-mono">
-                      <code>{generatedCode}</code>
-                    </pre>
-                  </div>
+                  <button
+                    onClick={downloadHTMLFile}
+                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+                  >
+                    Download HTML File
+                  </button>
                 </div>
-              )}
-            </div>
+
+                <div className="border-2 border-gray-200 dark:border-gray-600 rounded-xl overflow-hidden shadow-lg">
+                  <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white px-6 py-4 text-sm font-semibold">
+                    Generated HTML5 Code (Inline CSS Only)
+                  </div>
+                  <pre className="bg-gray-900 p-8 text-sm overflow-auto max-h-[600px] text-gray-300 font-mono leading-relaxed">
+                    <code>{generatedCode}</code>
+                  </pre>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
