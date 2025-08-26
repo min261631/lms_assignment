@@ -13,7 +13,7 @@ export default function Home() {
               </svg>
             </div>
             <h1 className="text-6xl font-bold text-gray-900 dark:bg-gradient-to-r dark:from-white dark:via-blue-200 dark:to-indigo-200 dark:bg-clip-text dark:text-transparent mb-8">
-              Professional HTML5 Code Generator
+              La Trobe University LMS 
             </h1>
             <p className="text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
               Create enterprise-grade HTML5 components with inline CSS and JavaScript. 
@@ -25,6 +25,22 @@ export default function Home() {
 
           {/* Features Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+
+                     <Link href="/main_pages/tabs" className="group">
+               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group-hover:border-blue-200 dark:group-hover:border-blue-700 border border-gray-200 dark:border-gray-700">
+                 <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                   </svg>
+                 </div>
+                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                   Generate Tabs
+                 </h3>
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                Create interactive tab layouts and get the ready made customized code
+                </p>
+              </div>
+            </Link>
 
             <Link href="/main_pages/escape-room" className="group">
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group-hover:border-green-200 dark:group-hover:border-green-700 border border-gray-200 dark:border-gray-700">
@@ -74,21 +90,7 @@ export default function Home() {
               </div>
             </Link>
 
-            <Link href="/main_pages/about" className="group">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group-hover:border-orange-200 dark:group-hover:border-orange-700 border border-gray-200 dark:border-gray-700">
-                <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
-                  About Project
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                  Learn about the project, student information, and how to use this platform
-                </p>
-              </div>
-            </Link>
+
           </div>
 
           {/* Bottom CTA */}

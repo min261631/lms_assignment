@@ -24,17 +24,14 @@ const Header: React.FC = () => {
       <div className="container mx-auto flex justify-between items-center px-8 py-6">
         <div className="flex items-center space-x-6">
           {/* Student Number - Top Left */}
-          <div className="text-sm font-semibold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm">
-            Student #: 12345678
-          </div>       
+          <Link href="/" className="text-sm font-semibold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 cursor-pointer">
+            Student ID: 21930306
+          </Link>       
 
         </div>
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8" role="navigation" aria-label="Main navigation">
-          <Link href="/" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 font-semibold hover:scale-105">
-            Home
-          </Link>
           <Link href="/main_pages/tabs" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 font-semibold hover:scale-105">
             Tabs
           </Link>
@@ -85,13 +82,6 @@ const Header: React.FC = () => {
         }`}
       >
         <nav className="container mx-auto px-8 py-6 space-y-4" role="navigation" aria-label="Navigation menu">
-          <Link 
-            href="/" 
-            onClick={closeMenu}
-            className="block text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 font-semibold py-3 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg px-4"
-          >
-            Home
-          </Link>
           <Link 
             href="/main_pages/tabs" 
             onClick={closeMenu}

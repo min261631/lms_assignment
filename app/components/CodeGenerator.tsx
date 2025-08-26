@@ -7,6 +7,7 @@ interface TabConfig {
   id: string;
   title: string;
   content: string;
+  color: string;
 }
 
 // Cookie utility functions
@@ -30,16 +31,19 @@ const getCookie = (name: string): string | null => {
 export default function CodeGenerator() {
   const { theme } = useTheme();
   const [tabs, setTabs] = useState<TabConfig[]>([
-    { id: 'tab1', title: 'Tab 1', content: 'This is the content for Tab 1.' },
-    { id: 'tab2', title: 'Tab 2', content: 'This is the content for Tab 2.' },
-    { id: 'tab3', title: 'Tab 3', content: 'This is the content for Tab 3.' }
+    { id: 'tab1', title: 'Tab 1', content: 'This is the content for Tab 1.', color: '#3b82f6' },
+    { id: 'tab2', title: 'Tab 2', content: 'This is the content for Tab 2.', color: '#10b981' },
+    { id: 'tab3', title: 'Tab 3', content: 'This is the content for Tab 3.', color: '#f59e0b' }
   ]);
   const [activeTab, setActiveTab] = useState('tab1');
   const [generatedCode, setGeneratedCode] = useState('');
+  const [nextTabId, setNextTabId] = useState(4);
 
   // Load tabs from localStorage on component mount
   useEffect(() => {
     const savedTabs = localStorage.getItem('tabs');
+    const savedNextTabId = localStorage.getItem('nextTabId');
+    
     if (savedTabs) {
       try {
         const parsedTabs = JSON.parse(savedTabs);
@@ -47,6 +51,10 @@ export default function CodeGenerator() {
       } catch (error) {
         console.error('Error parsing saved tabs:', error);
       }
+    }
+    
+    if (savedNextTabId) {
+      setNextTabId(parseInt(savedNextTabId));
     }
   }, []);
 
@@ -65,6 +73,20 @@ export default function CodeGenerator() {
   useEffect(() => {
     localStorage.setItem('tabs', JSON.stringify(tabs));
   }, [tabs]);
+
+
+
+  // Save nextTabId to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('nextTabId', nextTabId.toString());
+  }, [nextTabId]);
+
+  // Ensure activeTab is always valid when tabs change
+  useEffect(() => {
+    if (tabs.length > 0 && !tabs.some(tab => tab.id === activeTab)) {
+      setActiveTab(tabs[0].id);
+    }
+  }, [tabs, activeTab]);
 
   // Save active tab to cookie whenever activeTab changes
   useEffect(() => {
@@ -85,17 +107,18 @@ export default function CodeGenerator() {
 <body style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; padding: 32px; background-color: #f8fafc; min-height: 100vh; line-height: 1.6;">
     <div style="max-width: 1200px; margin: 0 auto; background-color: white; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); overflow: hidden; border: 1px solid #e2e8f0;">
         <!-- Tab Navigation -->
-        <div style="display: flex; background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-bottom: 1px solid #e2e8f0;">
+        <div style="display: flex; background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
             ${tabs.map((tab, index) => `
             <button 
                 id="btn-${tab.id}" 
+                data-color="${tab.color}"
                 onclick="showTab('${tab.id}')" 
                 style="
                     flex: 1; 
                     padding: 20px 24px; 
                     border: none; 
-                    background-color: ${activeTab === tab.id ? 'rgba(255,255,255,0.15)' : 'transparent'}; 
-                    color: ${activeTab === tab.id ? 'white' : 'rgba(255,255,255,0.8)'}; 
+                    background-color: ${activeTab === tab.id ? tab.color : '#f1f5f9'}; 
+                    color: #000000; 
                     cursor: pointer; 
                     font-size: 15px; 
                     font-weight: ${activeTab === tab.id ? '600' : '500'}; 
@@ -103,12 +126,11 @@ export default function CodeGenerator() {
                     position: relative;
                     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
                     letter-spacing: 0.025em;
+                    border-right: 1px solid #e2e8f0;
                 "
-                onmouseover="this.style.backgroundColor='${activeTab === tab.id ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)'}'"
-                onmouseout="this.style.backgroundColor='${activeTab === tab.id ? 'rgba(255,255,255,0.15)' : 'transparent'}'"
             >
                 ${tab.title}
-                ${activeTab === tab.id ? '<div style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);"></div>' : ''}
+                ${activeTab === tab.id ? '<div style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: ' + tab.color + ';"></div>' : ''}
             </button>`).join('')}
         </div>
         
@@ -142,10 +164,15 @@ export default function CodeGenerator() {
             // Remove active class from all buttons
             const tabButtons = document.querySelectorAll('[id^="btn-"]');
             tabButtons.forEach(btn => {
-                btn.style.backgroundColor = 'transparent';
-                btn.style.color = 'rgba(255,255,255,0.8)';
+                btn.style.backgroundColor = '#f1f5f9';
+                btn.style.color = '#000000';
                 btn.style.fontWeight = '500';
-                btn.innerHTML = btn.innerHTML.replace('<div style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);"></div>', '');
+                btn.style.borderColor = '#e2e8f0';
+                // Remove any existing indicator
+                const existingIndicator = btn.querySelector('div[style*="position: absolute"]');
+                if (existingIndicator) {
+                    existingIndicator.remove();
+                }
             });
             
             // Show selected tab content
@@ -157,15 +184,38 @@ export default function CodeGenerator() {
             // Add active class to selected button
             const selectedButton = document.getElementById('btn-' + tabId);
             if (selectedButton) {
-                selectedButton.style.backgroundColor = 'rgba(255,255,255,0.15)';
-                selectedButton.style.color = 'white';
+                // Get the tab color from the data attribute
+                const tabColor = selectedButton.getAttribute('data-color') || '#3b82f6';
+                selectedButton.style.backgroundColor = tabColor;
+                selectedButton.style.color = '#000000';
                 selectedButton.style.fontWeight = '600';
-                selectedButton.innerHTML += '<div style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);"></div>';
+                selectedButton.style.borderColor = tabColor;
+                
+                // Add indicator
+                const indicator = document.createElement('div');
+                indicator.style.cssText = 'position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: ' + tabColor + ';';
+                selectedButton.appendChild(indicator);
             }
         }
         
-        // Initialize with first tab active
+        // Add hover effects
         document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('[id^="btn-"]');
+            tabButtons.forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    if (this.style.backgroundColor !== this.getAttribute('data-color')) {
+                        this.style.backgroundColor = '#e2e8f0';
+                    }
+                });
+                
+                btn.addEventListener('mouseleave', function() {
+                    if (this.style.backgroundColor !== this.getAttribute('data-color')) {
+                        this.style.backgroundColor = '#f1f5f9';
+                    }
+                });
+            });
+            
+            // Initialize with first tab active
             showTab('${activeTab}');
         });
     </script>
@@ -207,19 +257,36 @@ export default function CodeGenerator() {
       alert('Maximum of 15 tabs allowed!');
       return;
     }
+    
+    // Generate a random color for the new tab
+    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#84cc16', '#f97316'];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    
     const newTab: TabConfig = {
-      id: `tab${tabs.length + 1}`,
+      id: `tab${nextTabId}`,
       title: `Step ${tabs.length + 1}`,
-      content: `This is the content for Step ${tabs.length + 1}.`
+      content: `This is the content for Step ${tabs.length + 1}.`,
+      color: randomColor
     };
     setTabs([...tabs, newTab]);
+    setNextTabId(nextTabId + 1);
+    
+    // If this is the first tab being added, make it active
+    if (tabs.length === 0) {
+      setActiveTab(newTab.id);
+    }
   };
 
   const removeTab = (index: number) => {
     if (tabs.length > 1) {
       const newTabs = tabs.filter((_, i) => i !== index);
       setTabs(newTabs);
+      // If the removed tab was active, set the first remaining tab as active
       if (activeTab === tabs[index].id) {
+        setActiveTab(newTabs[0].id);
+      }
+      // If the active tab no longer exists in the new tabs array, set the first tab as active
+      else if (!newTabs.some(tab => tab.id === activeTab)) {
         setActiveTab(newTabs[0].id);
       }
     }
@@ -275,9 +342,13 @@ export default function CodeGenerator() {
                       onClick={() => setActiveTab(tab.id)}
                       className={`flex-1 text-left px-6 py-4 rounded-xl border-2 transition-all duration-200 font-semibold ${
                         activeTab === tab.id 
-                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-600 shadow-lg transform scale-105' 
-                          : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:shadow-md'
+                          ? 'text-white shadow-lg transform scale-105' 
+                          : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-600 hover:shadow-md'
                       }`}
+                      style={{
+                        backgroundColor: activeTab === tab.id ? tab.color : undefined,
+                        borderColor: activeTab === tab.id ? tab.color : undefined
+                      }}
                     >
                       {tab.title}
                     </button>
@@ -294,7 +365,7 @@ export default function CodeGenerator() {
                   </div>
                 ))}
               </div>
-            </div>
+                        </div>
 
             {/* Tabs Content Section */}
             <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8 hover:shadow-2xl transition-shadow duration-300">
@@ -322,6 +393,32 @@ export default function CodeGenerator() {
                       className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 dark:text-white bg-white dark:bg-gray-700 font-medium shadow-sm"
                       placeholder="Enter tab title..."
                     />
+                  </div>
+                  
+                  <div className="mb-8">
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">
+                      Tab Color
+                    </label>
+                    <div className="flex items-center space-x-4">
+                      <input
+                        type="color"
+                        value={tab.color}
+                        onChange={(e) => updateTab(index, 'color', e.target.value)}
+                        className="w-16 h-16 rounded-xl border-2 border-gray-200 dark:border-gray-600 cursor-pointer"
+                      />
+                      <div className="flex-1">
+                        <input
+                          type="text"
+                          value={tab.color}
+                          onChange={(e) => updateTab(index, 'color', e.target.value)}
+                          className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 dark:text-white bg-white dark:bg-gray-700 font-mono text-sm"
+                          placeholder="#3b82f6"
+                        />
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                      Choose a color for this tab. The color will be used when the tab is active.
+                    </p>
                   </div>
                   
                   <div>

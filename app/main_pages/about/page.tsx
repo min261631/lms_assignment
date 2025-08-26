@@ -44,7 +44,7 @@ export default function About() {
                   </svg>
                 </div>
                 <strong className="text-gray-900 dark:text-white font-semibold">Student Number:</strong>
-                <p className="text-gray-600 dark:text-gray-300 mt-2 font-medium">12345678</p>
+                <p className="text-gray-600 dark:text-gray-300 mt-2 font-medium">21930306</p>
               </div>
               <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 border border-gray-200 dark:border-gray-600">
                 <div className="text-purple-600 dark:text-purple-400 mb-3">
