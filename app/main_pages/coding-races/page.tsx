@@ -2,9 +2,8 @@
  * Coding Races Page - Coming Soon feature for competitive programming challenges
  * 
  * AI-assisted development:
- * - GitHub Copilot helped with consistent page structure and styling
- * - ChatGPT assisted with dark mode text visibility fixes
- * - AI code review for responsive design and accessibility
+ * GitHub Copilot helped with consistent page structure and styling
+ * ChatGPT assisted with dark mode text visibility fixes
  */
 export default function CodingRaces() {
   return (

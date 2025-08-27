@@ -6,9 +6,9 @@ import Link from "next/link";
  * Homepage Component : main landing page for the La Trobe University LMS application.
  * 
  * AI-assisted development:
- * - GitHub Copilot helped with responsive grid layout and Tailwind CSS classes
- * - ChatGPT assisted with component structure and semantic HTML
- * - AI code review for hover effects and interactive animations
+ * GitHub Copilot helped with responsive grid layout and Tailwind CSS classes
+ * ChatGPT assisted with component structure and semantic HTML
+ * AI code review for hover effects and interactive animations
  */
 export default function Home() {
   return (

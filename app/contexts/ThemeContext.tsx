@@ -6,9 +6,9 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
  * Theme Context Implementation
  * 
  * This theme management system was developed with assistance from:
- * - GitHub Copilot for React context patterns and TypeScript interfaces
- * - ChatGPT for debugging theme persistence and system theme detection
- * - AI-assisted code review for accessibility and best practices
+ * GitHub Copilot for React context patterns and TypeScript interfaces
+ * ChatGPT for debugging theme persistence and system theme detection
+
  */
 
 type Theme = 'light' | 'dark' | 'system';

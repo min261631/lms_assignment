@@ -1,16 +1,12 @@
 @import "tailwindcss";
 
-/* ==========================================================================
-   GLOBAL CSS STYLES
-   ========================================================================== */
 
 /**
  * Global CSS Implementation
  * 
- * AI-assisted development:
- * - GitHub Copilot helped with CSS organization and Tailwind integration
- * - ChatGPT assisted with theme-specific overrides and accessibility features
- * - AI code review for responsive design patterns and color schemes
+  *GitHub Copilot helped with CSS organization and Tailwind integration
+ * ChatGPT assisted with theme-specific overrides and accessibility features
+ * AI code review for responsive design patterns and color schemes
  */
 
 /* Light Mode Styles */
@@ -95,7 +91,7 @@ html:not(.dark) header .text-gray-700 {
 }
 
 /* Gradient Backgrounds */
-/* AI-assisted: GitHub Copilot suggested gradient background implementations */
+/*Copilot suggested gradient background implementations */
 html:not(.dark) .bg-gradient-to-br.from-slate-50.via-blue-50.to-indigo-50 {
   background: linear-gradient(to bottom right, #f8fafc, #dbeafe, #e0e7ff) !important;
 }
@@ -121,7 +117,7 @@ body {
 }
 
 /* Accessibility */
-/* AI-assisted: ChatGPT helped with accessibility features and focus management */
+/* ChatGPT helped with accessibility features and focus management */
 :focus {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
@@ -144,7 +140,7 @@ body {
 }
 
 /* High Contrast Mode */
-/* AI-assisted: GitHub Copilot suggested high contrast mode support */
+/* Copilot suggested high contrast mode support */
 @media (prefers-contrast: high) {
   .bg-blue-600 {
     background-color: #1e40af !important;
@@ -160,7 +156,7 @@ body {
 }
 
 /* Reduced Motion */
-/* AI-assisted: ChatGPT helped with reduced motion preferences for accessibility */
+/* ChatGPT helped with reduced motion preferences for accessibility */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;

@@ -1,10 +1,6 @@
 /**
  * Escape Room Page - Coming Soon feature for interactive puzzle-based learning
  * 
- * AI-assisted development:
- * - GitHub Copilot helped with consistent page structure and styling
- * - ChatGPT assisted with dark mode text visibility fixes
- * - AI code review for responsive design and accessibility
  */
 export default function EscapeRoom() {
   return (

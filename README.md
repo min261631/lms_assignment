@@ -206,16 +206,8 @@ This project is developed for educational purposes as part of the CSE3CWA Web Ap
 
 ## 🙏 Acknowledgments
 
-- **La Trobe University**: For providing the educational framework
-- **Next.js Team**: For the excellent React framework
 - **Tailwind CSS**: For the utility-first CSS framework
 - **GitHub Copilot**: For AI-assisted code generation
 - **ChatGPT**: For debugging assistance and best practices guidance
 
-## 📞 Contact
 
-For questions or feedback about this project, please contact the development team through the course coordinator.
-
----
-
-**Built with ❤️ for La Trobe University CSE3CWA Web Applications Course**

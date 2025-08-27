@@ -72,13 +72,22 @@ export default function About() {
               </svg>
               How to Use This Website
             </h2>
-            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-12 text-center border border-gray-200 dark:border-gray-600">
-              <div className="text-6xl mb-6">🎬</div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                Video Tutorial Coming Soon
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 border border-gray-200 dark:border-gray-600">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+                Video Tutorial
               </h3>
-              <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">
-                A comprehensive video tutorial will be added here to demonstrate how to use the HTML5 generator, 
+              <div className="relative w-full max-w-4xl mx-auto">
+                <video 
+                  className="w-full h-auto rounded-lg shadow-lg"
+                  controls
+                  preload="metadata"
+                >
+                  <source src="/Untitled video - Made with Clipchamp (3).mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <p className="text-gray-600 dark:text-gray-300 text-lg mt-6 text-center max-w-2xl mx-auto leading-relaxed">
+                Watch this comprehensive tutorial to learn how to use the HTML5 generator, 
                 configure components, and deploy the generated code to MOODLE LMS.
               </p>
             </div>
