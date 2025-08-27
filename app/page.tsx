@@ -77,10 +77,10 @@ export default function Home() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
-                  About Project
+                  About the LMS
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                  Learn about the project, student information, and how to use this platform
+                  Learn about the LMS, student information, and how to use this platform
                 </p>
               </div>
             </Link>

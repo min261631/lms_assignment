@@ -11,8 +11,8 @@ import CookieConsent from './components/CookieConsent';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'CodeGen Pro - HTML5 Code Generator',
-  description: 'Generate professional HTML5 code with inline CSS and JavaScript for tabs, carousels, and more.',
+  title: 'La Trobe LMS'
+
 };
 
 export default function RootLayout({

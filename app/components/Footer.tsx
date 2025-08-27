@@ -18,10 +18,10 @@ const Footer: React.FC = () => {
           </div>
           <div className="text-center md:text-right space-y-1">
             <p className="text-sm">
-              Student Name: [Your Name]
+              Student Name: Mihini Ranasinghe
             </p>
             <p className="text-sm">
-              Student Number: 12345678
+              Student Number: 21930306
             </p>
             <p className="text-sm">
               Date: {currentDate}
