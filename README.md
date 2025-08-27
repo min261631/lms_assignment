@@ -187,12 +187,6 @@ This project was developed with assistance from various AI tools:
 - **Database Integration**: Persistent data storage
 - **Real-time Features**: WebSocket integration for live updates
 
-### Technical Improvements
-- **Performance**: Image optimization and lazy loading
-- **SEO**: Meta tags and structured data
-- **Testing**: Unit and integration tests
-- **CI/CD**: Automated deployment pipeline
-
 ## 👨‍🎓 Student Information
 
 - **Student ID**: 21930306
@@ -206,16 +200,7 @@ This project is developed for educational purposes as part of the CSE3CWA Web Ap
 
 ## 🙏 Acknowledgments
 
-- **La Trobe University**: For providing the educational framework
-- **Next.js Team**: For the excellent React framework
-- **Tailwind CSS**: For the utility-first CSS framework
 - **GitHub Copilot**: For AI-assisted code generation
 - **ChatGPT**: For debugging assistance and best practices guidance
 
-## 📞 Contact
 
-For questions or feedback about this project, please contact the development team through the course coordinator.
-
----
-
-**Built with ❤️ for La Trobe University CSE3CWA Web Applications Course**
