@@ -1,5 +1,10 @@
 /**
  * Escape Room Page - Coming Soon feature for interactive puzzle-based learning
+ * 
+ * AI-assisted development:
+ * - GitHub Copilot helped with consistent page structure and styling
+ * - ChatGPT assisted with dark mode text visibility fixes
+ * - AI code review for responsive design and accessibility
  */
 export default function EscapeRoom() {
   return (
@@ -10,6 +15,7 @@ export default function EscapeRoom() {
           Escape Room
         </h1>
         
+        {/* AI-assisted: GitHub Copilot suggested card-based layout for consistency */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
           
           <div className="text-6xl mb-6">🚪</div>
@@ -22,6 +28,7 @@ export default function EscapeRoom() {
             This page is under development. Interactive puzzle-based learning experiences will be available here.
           </p>
           
+          {/* AI-assisted: ChatGPT helped with dark mode color scheme and text visibility */}
           <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
             <p className="text-sm text-blue-900 dark:text-blue-300">
               This feature will allow students to engage in interactive escape room scenarios 

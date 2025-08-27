@@ -2,6 +2,15 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+/**
+ * Theme Context Implementation
+ * 
+ * This theme management system was developed with assistance from:
+ * - GitHub Copilot for React context patterns and TypeScript interfaces
+ * - ChatGPT for debugging theme persistence and system theme detection
+ * - AI-assisted code review for accessibility and best practices
+ */
+
 type Theme = 'light' | 'dark' | 'system';
 
 interface ThemeContextType {
@@ -18,6 +27,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
 
   // Function to apply theme to document with debugging
+  //Copilot helped with theme application logic and debugging
   const applyTheme = (newTheme: Theme) => {
     const root = document.documentElement;
     const body = document.body;
@@ -62,6 +72,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Initialize theme on mount
+  // ChatGPT helped with localStorage integration and useEffect patterns
   useEffect(() => {
     // Get saved theme or default to light
     const savedTheme = localStorage.getItem('theme') as Theme;
@@ -80,6 +91,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, [theme]);
 
   // Listen for system theme changes
+  // Copilot suggested media query event listener pattern
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     

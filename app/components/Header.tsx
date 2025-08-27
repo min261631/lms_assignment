@@ -7,11 +7,17 @@ import ThemeSelector from './ThemeSelector';
 
 /**
  * Header Component - Main navigation with responsive mobile menu
+ * 
+ * AI-assisted development:
+ * - GitHub Copilot helped with responsive design patterns and Tailwind CSS classes
+ * - ChatGPT assisted with accessibility features (ARIA labels, keyboard navigation)
+ * - AI code review for mobile menu animation and state management
  */
 const Header: React.FC = () => {
   const { resolvedTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // AI-assisted: GitHub Copilot suggested state management pattern for mobile menu
   const toggleMenu = () => {
     console.log('Hamburger menu clicked, current state:', isMenuOpen);
     setIsMenuOpen(!isMenuOpen);
@@ -54,12 +60,14 @@ const Header: React.FC = () => {
           <ThemeSelector />
           
           {/* Hamburger Menu Button */}
+          {/* AI-assisted: ChatGPT helped with accessibility attributes and ARIA labels */}
           <button
             onClick={toggleMenu}
             className="flex flex-col justify-center items-center w-10 h-10 space-y-1.5 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 border border-gray-300 dark:border-gray-600"
             aria-label="Toggle navigation menu"
             aria-expanded={isMenuOpen}
           >
+            {/* AI-assisted: GitHub Copilot suggested CSS transform animations for hamburger icon */}
             <span 
               className={`block w-6 h-0.5 bg-gray-700 dark:bg-gray-200 transition-all duration-300 ease-in-out transform ${
                 isMenuOpen ? 'rotate-45 translate-y-2' : ''
@@ -80,6 +88,7 @@ const Header: React.FC = () => {
       </div>
 
       {/* Mobile Navigation Menu */}
+ 
       <div 
         className={`absolute top-full left-0 right-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-lg transition-all duration-300 ease-in-out transform z-50 ${
           isMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'

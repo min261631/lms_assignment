@@ -4,6 +4,11 @@ import Link from "next/link";
 
 /**
  * Homepage Component : main landing page for the La Trobe University LMS application.
+ * 
+ * AI-assisted development:
+ * - GitHub Copilot helped with responsive grid layout and Tailwind CSS classes
+ * - ChatGPT assisted with component structure and semantic HTML
+ * - AI code review for hover effects and interactive animations
  */
 export default function Home() {
   return (
@@ -19,9 +24,11 @@ export default function Home() {
           </div>
 
           {/* Features Grid */}
+          {/* AI-assisted: GitHub Copilot suggested responsive grid layout with Tailwind classes */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
 
             <Link href="/main_pages/tabs" className="group">
+              {/* AI-assisted: ChatGPT helped with card design and hover effects */}
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group-hover:border-blue-200 dark:group-hover:border-blue-700 border border-gray-200 dark:border-gray-700">
                 <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,6 +95,7 @@ export default function Home() {
           </div>
 
           {/* CTA Section */}
+          {/* AI-assisted: GitHub Copilot helped with call-to-action styling and button design */}
           <div className="text-center">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 rounded-3xl p-12 text-white shadow-2xl">
               <h3 className="text-3xl font-bold mb-6">Ready to Create Professional Content?</h3>

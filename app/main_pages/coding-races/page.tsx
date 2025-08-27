@@ -1,5 +1,10 @@
 /**
  * Coding Races Page - Coming Soon feature for competitive programming challenges
+ * 
+ * AI-assisted development:
+ * - GitHub Copilot helped with consistent page structure and styling
+ * - ChatGPT assisted with dark mode text visibility fixes
+ * - AI code review for responsive design and accessibility
  */
 export default function CodingRaces() {
   return (
@@ -10,6 +15,7 @@ export default function CodingRaces() {
           Coding Races
         </h1>
         
+        {/* AI-assisted: GitHub Copilot suggested card-based layout for consistency */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
           
           <div className="text-6xl mb-6">🏁</div>
@@ -22,6 +28,7 @@ export default function CodingRaces() {
             This page is under development. Competitive programming challenges will be available here.
           </p>
           
+          {/* AI-assisted: ChatGPT helped with dark mode color scheme and text visibility */}
           <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
             <p className="text-sm text-green-900 dark:text-green-300">
               This feature will provide competitive programming challenges where students 
