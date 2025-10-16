@@ -1,0 +1,12 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: escape-room:latest
+    container_name: escape-room
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    restart: unless-stopped

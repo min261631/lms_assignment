@@ -1,9 +1,10 @@
+// app/main_pages/escape-room/StageEditor.tsx
 'use client';
 
 import React from 'react';
-import { Trash2, ChevronUp, ChevronDown, Code, Bug, Hash, FileCode, MousePointerClick, X } from 'lucide-react';
+import { Trash2, ChevronUp, ChevronDown, Code, Bug, Hash, FileCode, MousePointerClick } from 'lucide-react';
 import { Stage, ChallengeType } from './StageTypes';
-// Assuming these UI components exist in your project path: '@/app/components/ui/'
+// NOTE: Assuming these UI components exist in your project path: '@/app/components/ui/'
 import { Input } from '@/app/components/ui/input'; 
 import { Textarea } from '@/app/components/ui/textarea';
 import { Button } from '@/app/components/ui/button';
@@ -16,13 +17,13 @@ interface StageEditorProps {
   onDelete: () => void;
 }
 
-const challengeTypes: { value: ChallengeType; label: string; description: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { value: 'format-code', label: 'Format Code', description: 'Validate exact code style (string match).', icon: FileCode },
-  { value: 'debug-code', label: 'Debug Code', description: 'Student must fix syntax or logic errors.', icon: Bug },
-  { value: 'generate-numbers', label: 'Generate Numbers (0-1000)', description: 'Student must write a function to generate a numeric array (0-1000).', icon: Hash },
-  { value: 'port-data', label: 'Port Data (JSON to CSV)', description: 'Student must convert JSON to CSV format.', icon: FileCode },
-  { value: 'click-debug', label: 'Click to Debug (Image Clue)', description: 'Clickable image logs hint to console and advances.', icon: MousePointerClick },
-  { value: 'custom', label: 'Custom Answer/Key', description: 'Simple text match for a non-coding answer/key.', icon: Code },
+const challengeTypes: { value: ChallengeType; label: string; description: string }[] = [
+  { value: 'format-code', label: 'Format Code', description: 'Validate exact code style (string match).' },
+  { value: 'debug-code', label: 'Debug Code', description: 'Student must fix syntax or logic errors.' },
+  { value: 'generate-numbers', label: 'Generate Numbers (0-1000)', description: 'Student must write a function to generate a numeric array (0-1000).' },
+  { value: 'port-data', label: 'Port Data (JSON to CSV)', description: 'Student must convert JSON to CSV format.' },
+  { value: 'click-debug', label: 'Click to Debug (Image Clue)', description: 'Clickable image logs hint to console and advances.' },
+  { value: 'custom', label: 'Custom Answer/Key', description: 'Simple text match for a non-coding answer/key.' },
 ];
 
 const challengeTypeMap = new Map(challengeTypes.map(t => [t.value, t]));
@@ -32,30 +33,36 @@ export default function StageEditor({ stage, index, onUpdate, onDelete }: StageE
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
 
   const updateField = (field: keyof Stage, value: string | string[]) => {
-    onUpdate({ ...stage, [field]: value as any });
+    onUpdate({ ...stage, [field]: value });
   };
   
   const handleTypeChange = (value: ChallengeType) => {
-    let updatedStage: Stage = { ...stage, type: value };
+    const updatedStage: Stage = { ...stage, type: value };
 
     if (value === 'click-debug') {
-        // Clear code fields and set dummy answer for click puzzles
-        updatedStage.code = '';
-        updatedStage.answer = 'DEBUG_SUCCESS';
+        onUpdate({ ...updatedStage, code: '', answer: 'DEBUG_SUCCESS' });
+        return;
     } else {
-         // Ensure code field exists for coding puzzles
          if (!updatedStage.code) {
-             updatedStage.code = '// function solution() {\\n  return "";\\n}';
+             onUpdate({ ...updatedStage, code: '// function solution() {\\n  return "";\\n}', clueImage: undefined });
+             return;
          }
-         // Clear image field if not a click puzzle
-         updatedStage.clueImage = undefined;
+         onUpdate({ ...updatedStage, clueImage: undefined });
+         return;
     }
-    
-    onUpdate(updatedStage);
   };
   
   const selectedTypeInfo = challengeTypeMap.get(stage.type);
-  const Icon = selectedTypeInfo ? selectedTypeInfo.icon : Code;
+  let Icon;
+  switch (stage.type) {
+    case 'format-code': Icon = Code; break;
+    case 'debug-code': Icon = Bug; break;
+    case 'generate-numbers': Icon = Hash; break;
+    case 'port-data': Icon = FileCode; break;
+    case 'click-debug': Icon = MousePointerClick; break;
+    default: Icon = Code;
+  }
+  
   const isCodeChallenge = stage.type !== 'click-debug';
 
   return (
@@ -146,6 +153,18 @@ export default function StageEditor({ stage, index, onUpdate, onDelete }: StageE
             />
           </div>
 
+          {/* Description */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description (Internal Notes)</label>
+            <Textarea
+              value={stage.description}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => updateField('description', e.target.value)}
+              rows={2}
+              placeholder="Internal notes about this stage"
+            />
+          </div>
+
+
           {/* Starter Code (For Code Challenges) */}
           {isCodeChallenge && (
             <div>
@@ -181,8 +200,8 @@ export default function StageEditor({ stage, index, onUpdate, onDelete }: StageE
               )}
             </div>
           )}
-
-          {/* Expected Answer/Output */}
+          
+          {/* Expected Answer/Output (For Code Challenges and Custom) */}
           {isCodeChallenge && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Expected Answer/Output</label>
@@ -198,8 +217,8 @@ export default function StageEditor({ stage, index, onUpdate, onDelete }: StageE
               </p>
             </div>
           )}
-          
-          {/* Hints (One per line) */}
+
+          {/* Hints */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Hints (One per line)</label>
             <Textarea
@@ -210,17 +229,20 @@ export default function StageEditor({ stage, index, onUpdate, onDelete }: StageE
               rows={3}
               placeholder="Hint 1\nHint 2"
             />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              For click-debug stages, the first hint will be logged to console upon clicking.
+            </p>
           </div>
         </CardContent>
       )}
       
-      {/* --- Delete Confirmation Modal Logic --- */}
+      {/* --- Delete Confirmation Modal (Replaces confirm()) --- */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
           <Card className="bg-white dark:bg-gray-800 p-6 shadow-2xl max-w-sm w-full">
             <CardTitle className="text-xl text-red-500">Confirm Deletion</CardTitle>
             <CardContent className="mt-4 p-0">
-              <p className="dark:text-gray-300 mb-6">Are you sure you want to delete Stage {index + 1}: "{stage.title}"?</p>
+              <p className="dark:text-gray-300 mb-6">Are you sure you want to delete Stage {index + 1}: &quot;{stage.title}&quot;?</p>
               <div className="flex justify-end gap-3">
                 <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>
                   Cancel

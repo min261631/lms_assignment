@@ -92,7 +92,7 @@ export default function EscapeRoomBuilder() {
   // --- UI Handlers ---
   
   const updateRoomConfig = (field: keyof RoomConfig, value: string | number) => {
-    setRoomConfig(prev => ({ ...prev, [field]: value as any }));
+    setRoomConfig(prev => ({ ...prev, [field]: value }));
   };
   
   const addStage = () => {
@@ -123,6 +123,10 @@ export default function EscapeRoomBuilder() {
   };
   
   const handleGenerate = useCallback(() => {
+    if (stages.length === 0) {
+        alert('Please add at least one stage before generating code.');
+        return;
+    }
     const html = generateEscapeRoomHtml(roomConfig, stages);
     setGeneratedHtml(html);
   }, [roomConfig, stages]);

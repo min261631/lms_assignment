@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, CheckCircle2, XCircle, Lightbulb, Trophy, Code, Hash, FileCode, MousePointerClick, AlertTriangle, Bug } from 'lucide-react';
 import { RoomConfig, Stage, ChallengeType } from './StageTypes';
+// NOTE: Assuming these UI components exist in your project path
 import { Button } from '@/app/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/app/components/ui/card';
 import { Textarea } from '@/app/components/ui/textarea';
@@ -16,7 +17,7 @@ interface EscapeRoomPlayerProps {
 }
 
 // Map the challenge type to a Lucide Icon for the UI
-const challengeIcons: Record<ChallengeType, any> = {
+const challengeIcons: Record<ChallengeType, React.ComponentType<{ className?: string }>> = {
   "format-code": Code,
   "debug-code": Bug, 
   "generate-numbers": Hash,
@@ -29,32 +30,35 @@ const challengeIcons: Record<ChallengeType, any> = {
 
 const checkStageAnswer = (stage: Stage, input: string): { success: boolean, message: string } => {
     // 1. Normalize both inputs (The simple answer check)
-    const normalizedInput = input.trim().toLowerCase().replace(/\s+/g, ' ');
-    const normalizedSolution = stage.answer.trim().toLowerCase().replace(/\s+/g, ' ');
+    // In the generated HTML, we remove all whitespace for coding challenges.
+    const normalize = (str: string) => str.trim().toLowerCase().replace(/\s+/g, '');
+
+    const normalizedInput = normalize(input);
+    const normalizedSolution = normalize(stage.answer);
 
     if (normalizedInput === normalizedSolution) {
         return { success: true, message: 'SUCCESS! Lock Opened.' };
     }
     
-    // 2. Advanced Code Execution Simulation (for preview only, uses Function constructor)
+    // 2. Advanced Code Execution Simulation (for preview only)
     if (stage.type === 'generate-numbers' || stage.type === 'port-data') {
         try {
             const funcName = stage.type === 'generate-numbers' ? 'generateSequence' : 'jsonToCsv';
-
+            
             // Create an IIFE within the function constructor to execute the user's code locally
             const executionWrapper = new Function('testInput', `
                 // Execute user submitted code and define the function
                 ${input}; 
                 
-                if (typeof \${funcName} !== 'function') {
-                    throw new Error('Function "\\\${funcName}\\" not found in your code. Check name and syntax.');
+                if (typeof ${funcName} !== 'function') {
+                    throw new Error('Function "${funcName}" not found in your code. Check name and syntax.');
                 }
                 
                 let executionResult;
 
                 if (testInput === 'generate-numbers') {
                     // Test case: should return array 0-1000
-                    executionResult = \${funcName}();
+                    executionResult = ${funcName}();
                     
                     const isCorrect = Array.isArray(executionResult) && 
                                       executionResult.length === 1001 && 
@@ -68,7 +72,7 @@ const checkStageAnswer = (stage: Stage, input: string): { success: boolean, mess
                     const inputStr = '{"user": "exit_key"}';
                     const expectedOutput = 'user,exit_key';
                     
-                    executionResult = \${funcName}(inputStr);
+                    executionResult = ${funcName}(inputStr);
 
                     const isCorrect = String(executionResult).trim().toLowerCase() === expectedOutput.toLowerCase();
                     return { success: isCorrect, message: isCorrect ? 'Data Porting Successful!' : 'Output string is incorrect.' };
@@ -78,16 +82,17 @@ const checkStageAnswer = (stage: Stage, input: string): { success: boolean, mess
             `);
 
             const testCase = stage.type;
-            const result = executionWrapper(testCase as any);
+            const result = executionWrapper(testCase);
             
             if (result && result.success !== undefined) {
                 return result;
             }
             
-            return { success: false, message: 'Code execution failed to return a valid result object.' };
+            return { success: false, message: 'Code execution failed to return a structured result.' };
 
-        } catch (e: any) {
-            return { success: false, message: `CODE EXECUTION ERROR: ${e.message}` };
+        } catch (e) {
+            const error = e as Error;
+            return { success: false, message: `CODE EXECUTION ERROR: ${error.message}` };
         }
     }
 
@@ -105,18 +110,6 @@ const EscapeRoomPlayer: React.FC<EscapeRoomPlayerProps> = ({ roomConfig, stages 
     const [hintsRevealed, setHintsRevealed] = useState<number>(0);
     const [isComplete, setIsComplete] = useState(false);
     
-    if (!stages || stages.length === 0) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-                <Card className="p-8 text-center bg-red-900/20 border-red-500">
-                    <AlertTriangle className="w-10 h-10 mx-auto text-red-500 mb-4" />
-                    <CardTitle>Error</CardTitle>
-                    <CardDescription className="text-red-300">Cannot start preview: No puzzle stages defined.</CardDescription>
-                </Card>
-            </div>
-        );
-    }
-
     const currentStage = stages[currentStageIndex];
     const progress = (completedStages.size / stages.length) * 100;
     const Icon = currentStage ? challengeIcons[currentStage.type] : Code;
@@ -137,12 +130,34 @@ const EscapeRoomPlayer: React.FC<EscapeRoomPlayerProps> = ({ roomConfig, stages 
 
         return () => clearInterval(interval);
     }, [isRunning, timeRemaining]);
+    
+    // Reset answer input when stage changes
+    useEffect(() => {
+        if (currentStage) {
+            setStudentAnswer(currentStage.code || currentStage.answer || '');
+            setHintsRevealed(0);
+            setFeedback(null);
+        }
+    }, [currentStage]);
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
         return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
     };
+    
+    // Early return checks after all hooks
+    if (!stages || stages.length === 0 || !stages[0]) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+                <Card className="p-8 text-center bg-red-900/20 border-red-500">
+                    <AlertTriangle className="w-10 h-10 mx-auto text-red-500 mb-4" />
+                    <CardTitle>Error</CardTitle>
+                    <CardDescription className="text-red-300">Cannot start preview: No puzzle stages defined.</CardDescription>
+                </Card>
+            </div>
+        );
+    }
 
     const handleAdvanceStage = (result: { success: boolean, message: string }) => {
         setFeedback({ type: result.success ? "success" : "error", message: result.message });
@@ -153,9 +168,7 @@ const EscapeRoomPlayer: React.FC<EscapeRoomPlayerProps> = ({ roomConfig, stages 
             setTimeout(() => {
                 if (currentStageIndex < stages.length - 1) {
                     setCurrentStageIndex(currentStageIndex + 1);
-                    setStudentAnswer(stages[currentStageIndex + 1]?.code || ''); 
                     setFeedback(null);
-                    setHintsRevealed(0);
                 } else {
                     setIsComplete(true);
                     setIsRunning(false);
@@ -167,7 +180,10 @@ const EscapeRoomPlayer: React.FC<EscapeRoomPlayerProps> = ({ roomConfig, stages 
     // Logic for submitting a code/text answer
     const handleSubmitAnswer = () => {
         if (currentStage.type === 'click-debug') return; 
-        if (!studentAnswer.trim()) return;
+        if (!studentAnswer.trim()) {
+            setFeedback({ type: "error", message: "Please enter your answer before submitting." });
+            return;
+        }
 
         const result = checkStageAnswer(currentStage, studentAnswer);
         handleAdvanceStage(result);
@@ -182,7 +198,7 @@ const EscapeRoomPlayer: React.FC<EscapeRoomPlayerProps> = ({ roomConfig, stages 
         console.log("DEBUG HINT:", hint);
         
         // 2. Automatically advance the stage (because clicking is the solution)
-        handleAdvanceStage({ success: true, message: '🔍 Clue found! Check the console (F12) for the hint.' });
+        handleAdvanceStage({ success: true, message: '🔍 Clue found! Check the console (F12) for the hint. Advancing to the next lock.' });
     };
 
 
@@ -196,9 +212,7 @@ const EscapeRoomPlayer: React.FC<EscapeRoomPlayerProps> = ({ roomConfig, stages 
     const skipStage = () => {
         if (currentStageIndex < stages.length - 1) {
             setCurrentStageIndex(currentStageIndex + 1);
-            setStudentAnswer(stages[currentStageIndex + 1]?.code || '');
             setFeedback(null);
-            setHintsRevealed(0);
         }
     };
 
@@ -303,7 +317,7 @@ const EscapeRoomPlayer: React.FC<EscapeRoomPlayerProps> = ({ roomConfig, stages 
                                 {currentStage.type === 'click-debug' ? (
                                     <div className="text-center p-4">
                                         <img
-                                            src={currentStage.clueImage || roomConfig.backgroundImage || '/placeholder.svg'}
+                                            src={currentStage.clueImage || roomConfig.backgroundImage || 'https://placehold.co/300x300/4b5563/e5e7eb?text=Clue+Image'}
                                             alt="Clue Image"
                                             className="w-full max-w-sm h-auto object-cover mx-auto cursor-pointer border-4 border-yellow-400 rounded-lg hover:opacity-80 transition"
                                             onClick={handleImageClick}
@@ -359,7 +373,7 @@ const EscapeRoomPlayer: React.FC<EscapeRoomPlayerProps> = ({ roomConfig, stages 
                                     className="font-mono text-sm dark:bg-gray-900 dark:border-gray-700 text-green-400"
                                     value={studentAnswer}
                                     onChange={(e) => setStudentAnswer(e.target.value)}
-                                    disabled={currentStage.type === 'click-debug'} // Disable input for click puzzle
+                                    disabled={currentStage.type === 'click-debug' || completedStages.has(currentStageIndex)} // Disable input for click puzzle
                                 />
 
                                 {feedback && (
