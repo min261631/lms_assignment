@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "app/generated/prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model EscapeRoom {
+  id              String   @id @default(uuid())
+  title           String
+  description     String
+  timerMinutes    Int
+  backgroundImage String
+  stages          Json // Stores array of Stage objects
+  generatedHtml   String   @db.Text // Stores the generated HTML code
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([createdAt])
+}

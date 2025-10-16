@@ -1,30 +1,4 @@
 services:
-  frontend:
-    build: ./frontend
-    ports:
-      - "80:3000"
-    depends_on:
-      - api
-    environment:
-      - NODE_ENV=development
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules  # Optional: prevents overwriting node_modules in dev
-    command: npm run dev
-
-  api:
-    build: ./api
-    ports:
-      - "4080:3000"
-    depends_on:
-      - postgres
-    environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://user:password@postgres:5432/mydb
-    volumes:
-      - ./api:/app
-      - /app/node_modules/.prisma  # Optional: same as frontend
-
   postgres:
     image: postgres:15
     environment:
@@ -35,6 +9,47 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: ./api
+    # API listens on 4000 inside container
+    ports:
+      - "4080:4000"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://user:password@postgres:5432/mydb?schema=public
+      CORS_ORIGIN: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./api:/app
+      - /app/node_modules        # keep container node_modules
+      - /app/app/generated       # (optional) if using custom prisma output under app/generated
+
+  frontend:
+    build:
+      context: ./frontend
+      target: dev
+    # prefer 3000:3000 in dev; using host port 80 often needs admin privileges on Windows
+    ports:
+      - "3000:3000"
+      # if you insist on 80, use: "80:3000" (may need admin)
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:4080
+    depends_on:
+      api:
+        condition: service_started
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    # dev server (command is in Dockerfile CMD, but can override here if needed)
 
 volumes:
   postgres_data:

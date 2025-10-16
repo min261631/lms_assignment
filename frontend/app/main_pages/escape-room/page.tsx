@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useCallback, useMemo } from 'react';
-import { Code2, Save, Plus, Play } from 'lucide-react';
+import { Code2, Save, Plus, Play, FolderOpen, FilePlus, Trash2 } from 'lucide-react';
 import { generateEscapeRoomHtml } from './Generator';
 import { RoomConfig, Stage } from './StageTypes';
 import StageEditor from './StageEditor';
@@ -58,6 +58,78 @@ const CodeOutput = ({ htmlCode }: { htmlCode: string }) => {
   );
 };
 
+// --- Component: Load Rooms Modal ---
+const LoadRoomsModal = ({ 
+  rooms, 
+  loading, 
+  onClose, 
+  onLoad, 
+  onDelete 
+}: { 
+  rooms: any[]; 
+  loading: boolean; 
+  onClose: () => void; 
+  onLoad: (id: string) => void; 
+  onDelete: (id: string, title: string) => void; 
+}) => {
+  return (
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <Card className="bg-white dark:bg-gray-800 max-w-4xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-2xl text-indigo-600 dark:text-indigo-400">Load Saved Escape Room</CardTitle>
+            <Button variant="outline" onClick={onClose}>Close</Button>
+          </div>
+          <CardDescription>Select a room to load into the builder</CardDescription>
+        </CardHeader>
+        <CardContent className="overflow-y-auto flex-1">
+          {loading ? (
+            <p className="text-center py-8">Loading rooms...</p>
+          ) : rooms.length === 0 ? (
+            <p className="text-center py-8 text-gray-500">No saved rooms found. Create and save your first room!</p>
+          ) : (
+            <div className="space-y-3">
+              {rooms.map((room) => (
+                <div 
+                  key={room.id} 
+                  className="border border-gray-300 dark:border-gray-600 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg dark:text-white">{room.title}</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{room.description}</p>
+                      <div className="flex gap-4 mt-2 text-xs text-gray-500">
+                        <span>⏱️ {room.timerMinutes} min</span>
+                        <span>📅 {new Date(room.createdAt).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 ml-4">
+                      <Button 
+                        size="sm" 
+                        onClick={() => onLoad(room.id)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        Load
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        onClick={() => onDelete(room.id, room.title)}
+                        className="bg-red-600 hover:bg-red-700 text-white"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
 
 // --- Main Builder Component ---
 export default function EscapeRoomBuilder() {
@@ -87,6 +159,10 @@ export default function EscapeRoomBuilder() {
   const [generatedHtml, setGeneratedHtml] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [showLoadModal, setShowLoadModal] = useState(false);
+  const [savedRooms, setSavedRooms] = useState<any[]>([]);
+  const [loadingRooms, setLoadingRooms] = useState(false);
+  const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
 
 
   // --- UI Handlers ---
@@ -131,38 +207,129 @@ export default function EscapeRoomBuilder() {
     setGeneratedHtml(html);
   }, [roomConfig, stages]);
 
-  // --- Database Save Handler (Assignment 2 Requirement) ---
+  // --- Database Save Handler ---
   const handleSave = async () => {
     if (isSubmitting || stages.length === 0) return;
 
     setIsSubmitting(true);
-    setGeneratedHtml(''); 
 
     try {
       // 1. Generate the final HTML code
       const htmlOutput = generateEscapeRoomHtml(roomConfig, stages);
 
-      const response = await fetch('/api/output', {
-        method: 'POST',
+      // 2. Check if we're updating an existing room or creating a new one
+      const apiUrl = currentRoomId 
+        ? `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4080'}/api/escape-rooms/${currentRoomId}`
+        : `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4080'}/api/escape-rooms`;
+      
+      const method = currentRoomId ? 'PUT' : 'POST';
+
+      const response = await fetch(apiUrl, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          feature: 'EscapeRoom',
-          metadata: { config: roomConfig, stages: stages }, 
-          html_code: htmlOutput,
+          title: roomConfig.title,
+          description: roomConfig.description,
+          timerMinutes: roomConfig.timerMinutes,
+          backgroundImage: roomConfig.backgroundImage,
+          stages: stages,
+          generatedHtml: htmlOutput,
         }),
       });
 
       if (response.ok) {
-        alert('Room configuration and HTML output saved successfully!');
+        const savedRoom = await response.json();
+        setCurrentRoomId(savedRoom.id);
+        alert(`✅ Escape room "${roomConfig.title}" ${currentRoomId ? 'updated' : 'saved'} successfully!\nRoom ID: ${savedRoom.id}`);
+        setGeneratedHtml(htmlOutput); // Show the generated code after saving
       } else {
         const errorData = await response.json();
-        alert(`Error saving: ${errorData.message || response.statusText}. Check server console.`);
+        alert(`❌ Error saving: ${errorData.error || response.statusText}`);
       }
     } catch (error) {
       console.error('Save error:', error);
-      alert('Network error: Could not connect to the database API. Check your backend server.');
+      alert('❌ Network error: Could not connect to the API. Make sure the backend server is running.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // --- Load Saved Rooms ---
+  const fetchSavedRooms = async () => {
+    setLoadingRooms(true);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4080'}/api/escape-rooms`);
+      if (response.ok) {
+        const data = await response.json();
+        setSavedRooms(data.data || []);
+      } else {
+        alert('❌ Failed to load saved rooms');
+      }
+    } catch (error) {
+      console.error('Error loading rooms:', error);
+      alert('❌ Network error: Could not connect to the API');
+    } finally {
+      setLoadingRooms(false);
+    }
+  };
+
+  // --- Load a Specific Room ---
+  const handleLoadRoom = async (roomId: string) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4080'}/api/escape-rooms/${roomId}`);
+      if (response.ok) {
+        const room = await response.json();
+        
+        // Load the room data into the builder
+        setRoomConfig({
+          title: room.title,
+          description: room.description,
+          timerMinutes: room.timerMinutes,
+          backgroundImage: room.backgroundImage,
+        });
+        setStages(room.stages);
+        setGeneratedHtml(room.generatedHtml);
+        setCurrentRoomId(room.id);
+        setShowLoadModal(false);
+        
+        alert(`✅ Loaded "${room.title}" successfully!`);
+      } else {
+        alert('❌ Failed to load room');
+      }
+    } catch (error) {
+      console.error('Error loading room:', error);
+      alert('❌ Network error: Could not load room');
+    }
+  };
+
+  // --- Delete a Room ---
+  const handleDeleteRoom = async (roomId: string, roomTitle: string) => {
+    if (!confirm(`Are you sure you want to delete "${roomTitle}"?`)) return;
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4080'}/api/escape-rooms/${roomId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        alert(`✅ Deleted "${roomTitle}" successfully!`);
+        fetchSavedRooms(); // Refresh the list
+      } else {
+        alert('❌ Failed to delete room');
+      }
+    } catch (error) {
+      console.error('Error deleting room:', error);
+      alert('❌ Network error: Could not delete room');
+    }
+  };
+
+  // --- Create New Room ---
+  const handleNewRoom = () => {
+    if (confirm('Create a new room? Any unsaved changes will be lost.')) {
+      setRoomConfig(initialConfig);
+      setStages(initialStages);
+      setGeneratedHtml('');
+      setCurrentRoomId(null);
     }
   };
 
@@ -197,8 +364,32 @@ export default function EscapeRoomBuilder() {
                 <p className="text-gray-600 dark:text-gray-400 mt-1">
                     Design Moodle-deployable coding challenges for students.
                 </p>
+                {currentRoomId && (
+                  <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+                    ✓ Currently editing saved room
+                  </p>
+                )}
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
+                <Button 
+                    onClick={handleNewRoom}
+                    variant="outline"
+                    className="border-gray-300 dark:border-gray-600"
+                >
+                    <FilePlus className="w-4 h-4 mr-2" />
+                    New
+                </Button>
+                <Button 
+                    onClick={() => {
+                      setShowLoadModal(true);
+                      fetchSavedRooms();
+                    }}
+                    variant="outline"
+                    className="border-gray-300 dark:border-gray-600"
+                >
+                    <FolderOpen className="w-4 h-4 mr-2" />
+                    Load
+                </Button>
                 <Button 
                     onClick={() => setShowPreview(true)} 
                     disabled={stages.length === 0}
@@ -213,7 +404,7 @@ export default function EscapeRoomBuilder() {
                     className="bg-purple-600 hover:bg-purple-700 text-white"
                 >
                     <Save className="w-4 h-4 mr-2" />
-                    {isSubmitting ? 'Saving...' : 'Save Room'}
+                    {isSubmitting ? 'Saving...' : currentRoomId ? 'Update' : 'Save'}
                 </Button>
                 <Button 
                     onClick={handleGenerate} 
@@ -288,6 +479,17 @@ export default function EscapeRoomBuilder() {
 
         {/* Code Output */}
         {generatedHtml && <CodeOutput htmlCode={generatedHtml} />}
+
+        {/* Load Rooms Modal */}
+        {showLoadModal && (
+          <LoadRoomsModal
+            rooms={savedRooms}
+            loading={loadingRooms}
+            onClose={() => setShowLoadModal(false)}
+            onLoad={handleLoadRoom}
+            onDelete={handleDeleteRoom}
+          />
+        )}
       </div>
     </div>
   );
