@@ -19,36 +19,48 @@ A modern, responsive Learning Management System built for the CSE3CWA Web Applic
 
 ## 🛠️ Tech Stack
 
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
+- **Database**: PostgreSQL with Prisma ORM
 - **State Management**: React Context API
-- **Deployment**: Vercel-ready
+- **Container**: Docker & Docker Compose
 - **Development Tools**: ESLint, PostCSS
 
 ## 📁 Project Structure
 
 ```
 lms_assignment/
-├── app/
-│   ├── components/          # Reusable UI components
-│   │   ├── Header.tsx      # Navigation with mobile menu
-│   │   ├── Footer.tsx      # Site footer
-│   │   ├── ThemeSelector.tsx # Theme toggle component
-│   │   └── CookieConsent.tsx # Cookie consent banner
-│   ├── contexts/           # React context providers
-│   │   └── ThemeContext.tsx # Theme management
-│   ├── main_pages/         # Feature pages
-│   │   ├── tabs/          # Tab generator functionality
-│   │   ├── escape-room/   # Escape room feature (Coming Soon)
-│   │   ├── coding-races/  # Coding races feature (Coming Soon)
-│   │   └── about/         # About page
-│   ├── globals.css        # Global styles and theme overrides
-│   ├── layout.tsx         # Root layout with providers
-│   └── page.tsx           # Homepage
-├── public/                # Static assets
-├── package.json           # Dependencies and scripts
-└── README.md             # Project documentation
+├── frontend/
+│   ├── app/
+│   │   ├── api/               # API routes (Next.js API)
+│   │   │   ├── escape-rooms/  # Escape room endpoints
+│   │   │   ├── health/        # Health check
+│   │   │   └── progress/      # Progress tracking
+│   │   ├── components/        # Reusable UI components
+│   │   │   ├── Header.tsx     # Navigation with mobile menu
+│   │   │   ├── Footer.tsx     # Site footer
+│   │   │   └── ui/            # UI components (Button, Card, etc.)
+│   │   ├── contexts/          # React context providers
+│   │   │   └── ThemeContext.tsx # Theme management
+│   │   ├── lib/               # Utilities
+│   │   │   ├── api.ts         # API helper functions
+│   │   │   └── prisma.ts      # Prisma client
+│   │   ├── main_pages/        # Feature pages
+│   │   │   ├── tabs/          # Tab generator
+│   │   │   ├── escape-room/   # Escape room builder & player
+│   │   │   ├── coding-races/  # Coding challenges
+│   │   │   └── about/         # About page
+│   │   ├── globals.css        # Global styles
+│   │   ├── layout.tsx         # Root layout
+│   │   └── page.tsx           # Homepage
+│   ├── prisma/
+│   │   ├── schema.prisma      # Database schema
+│   │   └── migrations/        # Database migrations
+│   ├── Dockerfile             # Frontend container config
+│   └── package.json           # Dependencies
+├── docker-compose.yml         # Multi-container orchestration
+└── README.md                  # Documentation
 ```
 
 ## 🎨 Theme System
@@ -88,10 +100,10 @@ Built with a mobile-first approach:
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
-- npm or yarn
+- Docker & Docker Compose
+- Node.js 18+ (for local development without Docker)
 
-### Installation
+### Installation with Docker (Recommended)
 
 1. **Clone the repository**
    ```bash
@@ -99,29 +111,47 @@ Built with a mobile-first approach:
    cd lms_assignment
    ```
 
-2. **Install dependencies**
+2. **Start all services with Docker Compose**
    ```bash
-   npm install
-   # or
-   yarn install
+   docker-compose up
    ```
 
-3. **Run the development server**
+3. **Access the application**
+   - Frontend & API: [http://localhost:3000](http://localhost:3000)
+   - PostgreSQL: `localhost:5432`
+
+4. **Run database migrations** (first time only)
+   ```bash
+   docker-compose exec frontend npx prisma migrate deploy
+   ```
+
+### Local Development (without Docker)
+
+1. **Install dependencies**
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+2. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your database connection
+   ```
+
+3. **Run Prisma migrations**
+   ```bash
+   npx prisma migrate deploy
+   npx prisma generate
+   ```
+
+4. **Run the development server**
    ```bash
    npm run dev
-   # or
-   yarn dev
    ```
 
-4. **Open your browser**
+5. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
-
-### Build for Production
-
-```bash
-npm run build
-npm start
-```
 
 ## 🎯 Key Components
 
@@ -178,14 +208,27 @@ This project was developed with assistance from various AI tools:
 - Performance optimization suggestions
 - Code quality and maintainability improvements
 
+## 🏗️ Architecture
+
+This application uses a **monolithic Next.js architecture** combining:
+- **Frontend**: React components and pages
+- **Backend**: Next.js API routes for RESTful endpoints
+- **Database**: PostgreSQL with Prisma ORM
+
+**Benefits:**
+- Simplified deployment (single service)
+- Easier instrumentation and monitoring
+- Faster development iteration
+- Shared TypeScript types between frontend and backend
+- Single codebase maintenance
+
 ## 📋 Future Enhancements
 
 ### Planned Features
-- **Escape Room Module**: Interactive puzzle-based learning experiences
-- **Coding Races**: Competitive programming challenges with real-time leaderboards
 - **User Authentication**: Student login and progress tracking
-- **Database Integration**: Persistent data storage
 - **Real-time Features**: WebSocket integration for live updates
+- **Advanced Analytics**: Student progress tracking and insights
+- **Mobile App**: React Native application using same API
 
 ## 👨‍🎓 Student Information
 

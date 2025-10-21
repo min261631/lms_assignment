@@ -15,11 +15,12 @@ services:
       timeout: 3s
       retries: 10
 
-  api:
-    build: ./api
-    # API listens on 4000 inside container
+  app:
+    build:
+      context: .
+      target: dev
     ports:
-      - "4080:4000"
+      - "3000:3000"
     environment:
       NODE_ENV: development
       DATABASE_URL: postgresql://user:password@postgres:5432/mydb?schema=public
@@ -28,28 +29,9 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ./api:/app
-      - /app/node_modules        # keep container node_modules
-      - /app/app/generated       # (optional) if using custom prisma output under app/generated
-
-  frontend:
-    build:
-      context: ./frontend
-      target: dev
-    # prefer 3000:3000 in dev; using host port 80 often needs admin privileges on Windows
-    ports:
-      - "3000:3000"
-      # if you insist on 80, use: "80:3000" (may need admin)
-    environment:
-      NODE_ENV: development
-      NEXT_PUBLIC_API_BASE_URL: http://localhost:4080
-    depends_on:
-      api:
-        condition: service_started
-    volumes:
-      - ./frontend:/app
+      - .:/app
       - /app/node_modules
-    # dev server (command is in Dockerfile CMD, but can override here if needed)
+      - /app/.next
 
 volumes:
   postgres_data:
