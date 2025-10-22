@@ -15,6 +15,7 @@ export default function Breadcrumbs() {
   const pathname = usePathname();
 
   const generateBreadcrumbs = (): BreadcrumbItem[] => {
+    if (!pathname) return [{ label: 'Home', href: '/' }];
     const paths = pathname.split('/').filter(Boolean);
     const breadcrumbs: BreadcrumbItem[] = [
       { label: 'Home', href: '/' }

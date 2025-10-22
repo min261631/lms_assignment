@@ -1,16 +1,19 @@
 {
-  "name": "cwa",
+  "name": "lms-with-instrumentation",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start -p 3000",
+    "start:otel-verbose": "NEXT_OTEL_VERBOSE=1 next start -p 3000",
     "lint": "eslint",
     "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.17.1",
+    "@vercel/otel": "latest",
+    "@opentelemetry/api": "^1.4.1",
     "lucide-react": "^0.545.0",
     "next": "15.5.0",
     "react": "19.1.0",
