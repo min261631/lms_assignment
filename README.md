@@ -32,3 +32,16 @@ pnpm create next-app --example with-opentelemetry with-opentelemetry-app
 ```
 
 Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+
+
+docker-compose up postgres
+npx prisma migrate dev --name init
+docker-compose down postgres
+docker-compose build
+docker-compose up
+
+
+
+
+docker compose run --rm tests
+npx http-server ./playwright-artifacts -p 9000
