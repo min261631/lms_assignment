@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
+import { context, trace, SpanStatusCode } from "@opentelemetry/api";
+
 export const runtime = "nodejs";
 
 const CORS = {
@@ -8,115 +10,158 @@ const CORS = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
+const tracer = trace.getTracer("api.escape-room");
+
 export function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: CORS });
 }
 
-// GET /api/escape-rooms/[id] - Get a single escape room with full details
-export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const { id } = await params;
-    const escapeRoom = await prisma.escapeRoom.findUnique({
-      where: { id },
-    });
-
-    if (!escapeRoom) {
-      return NextResponse.json(
-        { error: "Escape room not found" },
-        { status: 404, headers: CORS }
-      );
-    }
-
-    return NextResponse.json(escapeRoom, { headers: CORS });
-  } catch (error) {
-    console.error("Error fetching escape room:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch escape room" },
-      { status: 500, headers: CORS }
-    );
-  }
+/** Helper: send JSON with CORS + set span status code attribute */
+function jsonWithCors(
+  data: unknown,
+  init: ResponseInit & { status?: number } = {}
+) {
+  const status = init.status ?? 200;
+  trace.getActiveSpan()?.setAttribute("http.status_code", status);
+  return NextResponse.json(data, { ...init, headers: { ...CORS, ...(init.headers || {}) } });
 }
 
-// PUT /api/escape-rooms/[id] - Update an escape room
-export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const { id } = await params;
-    const body = await req.json();
-    const { title, description, timerMinutes, backgroundImage, stages, generatedHtml } = body;
+/** GET /api/escape-rooms/[id] */
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  return await tracer.startActiveSpan("escape_room.get", async (span) => {
+    try {
+      const { id } = params;
+      span.setAttribute("room.id", id);
+      span.setAttribute("http.method", "GET");
 
-    // Validation
-    if (!title || !description || !timerMinutes || !backgroundImage || !stages || !generatedHtml) {
-      return NextResponse.json(
-        {
-          error: "Missing required fields: title, description, timerMinutes, backgroundImage, stages, generatedHtml",
-        },
-        { status: 400, headers: CORS }
+      const escapeRoom = await context.with(trace.setSpan(context.active(), span), () =>
+        prisma.escapeRoom.findUnique({ where: { id } })
       );
+
+      if (!escapeRoom) {
+        span.setStatus({ code: SpanStatusCode.ERROR, message: "Not Found" });
+        return jsonWithCors({ error: "Escape room not found" }, { status: 404 });
+      }
+
+      return jsonWithCors(escapeRoom, { status: 200 });
+    } catch (error) {
+      span.recordException(error as Error);
+      span.setStatus({ code: SpanStatusCode.ERROR, message: "Failed to fetch escape room" });
+      return jsonWithCors({ error: "Failed to fetch escape room" }, { status: 500 });
+    } finally {
+      span.end();
     }
-
-    if (!Array.isArray(stages) || stages.length === 0) {
-      return NextResponse.json(
-        { error: "stages must be a non-empty array" },
-        { status: 400, headers: CORS }
-      );
-    }
-
-    // Update escape room in database
-    const escapeRoom = await prisma.escapeRoom.update({
-      where: { id },
-      data: {
-        title,
-        description,
-        timerMinutes: parseInt(timerMinutes),
-        backgroundImage,
-        stages: stages,
-        generatedHtml,
-      },
-    });
-
-    return NextResponse.json(escapeRoom, { headers: CORS });
-  } catch (error) {
-    console.error("Error updating escape room:", error);
-    
-    // Check if error is because room not found
-    if (error instanceof Error && error.message.includes("Record to update not found")) {
-      return NextResponse.json(
-        { error: "Escape room not found" },
-        { status: 404, headers: CORS }
-      );
-    }
-
-    return NextResponse.json(
-      { error: "Failed to update escape room", details: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500, headers: CORS }
-    );
-  }
+  });
 }
 
-// DELETE /api/escape-rooms/[id] - Delete an escape room
-export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const { id } = await params;
-    await prisma.escapeRoom.delete({
-      where: { id },
-    });
+/** PUT /api/escape-rooms/[id] */
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  return await tracer.startActiveSpan("escape_room.update", async (span) => {
+    try {
+      const { id } = params;
+      span.setAttribute("room.id", id);
+      span.setAttribute("http.method", "PUT");
 
-    return new NextResponse(null, { status: 204, headers: CORS });
-  } catch (error) {
-    console.error("Error deleting escape room:", error);
-    
-    // Check if error is because room not found
-    if (error instanceof Error && error.message.includes("Record to delete does not exist")) {
-      return NextResponse.json(
-        { error: "Escape room not found" },
-        { status: 404, headers: CORS }
+      const body = await req.json();
+      const { title, description, timerMinutes, backgroundImage, stages, generatedHtml } = body;
+
+      // Basic validation
+      if (!title || !description || timerMinutes == null || !backgroundImage || !stages || !generatedHtml) {
+        span.setStatus({ code: SpanStatusCode.ERROR, message: "Validation error: missing fields" });
+        return jsonWithCors(
+          {
+            error:
+              "Missing required fields: title, description, timerMinutes, backgroundImage, stages, generatedHtml",
+          },
+          { status: 400 }
+        );
+      }
+
+      if (!Array.isArray(stages) || stages.length === 0) {
+        span.setStatus({ code: SpanStatusCode.ERROR, message: "Validation error: stages empty" });
+        return jsonWithCors({ error: "stages must be a non-empty array" }, { status: 400 });
+      }
+
+      const timer = typeof timerMinutes === "string" ? parseInt(timerMinutes, 10) : Number(timerMinutes);
+      if (!Number.isFinite(timer) || timer <= 0) {
+        span.setStatus({ code: SpanStatusCode.ERROR, message: "Validation error: timerMinutes invalid" });
+        return jsonWithCors({ error: "timerMinutes must be a positive number" }, { status: 400 });
+      }
+
+      // Useful attributes for debugging
+      const payloadSize = JSON.stringify(body || {}).length;
+      span.setAttribute("payload.size_bytes", payloadSize);
+      span.setAttribute("stages.count", stages.length);
+      span.setAttribute("timer.minutes", timer);
+
+      const escapeRoom = await context.with(trace.setSpan(context.active(), span), () =>
+        prisma.escapeRoom.update({
+          where: { id },
+          data: {
+            title,
+            description,
+            timerMinutes: timer,
+            backgroundImage,
+            stages,
+            generatedHtml,
+          },
+        })
       );
-    }
 
-    return NextResponse.json(
-      { error: "Failed to delete escape room" },
-      { status: 500, headers: CORS }
-    );
-  }
+      return jsonWithCors(escapeRoom, { status: 200 });
+    } catch (error) {
+      const message = (error as Error)?.message || "Unknown error";
+      span.recordException(error as Error);
+
+      // Prisma "record not found" handling
+      if (message.includes("Record to update not found")) {
+        span.setStatus({ code: SpanStatusCode.ERROR, message: "Not Found" });
+        return jsonWithCors({ error: "Escape room not found" }, { status: 404 });
+      }
+
+      span.setStatus({ code: SpanStatusCode.ERROR, message: "Failed to update escape room" });
+      return jsonWithCors({ error: "Failed to update escape room", details: message }, { status: 500 });
+    } finally {
+      span.end();
+    }
+  });
 }
 
+/** DELETE /api/escape-rooms/[id] */
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  return await tracer.startActiveSpan("escape_room.delete", async (span) => {
+    try {
+      const { id } = params;
+      span.setAttribute("room.id", id);
+      span.setAttribute("http.method", "DELETE");
+
+      await context.with(trace.setSpan(context.active(), span), () =>
+        prisma.escapeRoom.delete({ where: { id } })
+      );
+
+      return new NextResponse(null, { status: 204, headers: CORS });
+    } catch (error) {
+      const message = (error as Error)?.message || "Unknown error";
+      span.recordException(error as Error);
+
+      if (message.includes("Record to delete does not exist")) {
+        span.setStatus({ code: SpanStatusCode.ERROR, message: "Not Found" });
+        return jsonWithCors({ error: "Escape room not found" }, { status: 404 });
+      }
+
+      span.setStatus({ code: SpanStatusCode.ERROR, message: "Failed to delete escape room" });
+      return jsonWithCors({ error: "Failed to delete escape room" }, { status: 500 });
+    } finally {
+      span.end();
+    }
+  });
+}
