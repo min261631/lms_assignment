@@ -25,12 +25,14 @@ test.describe('Escape Room Builder – smoke', () => {
     // Preview button (exact text is "Preview")
     await page.getByRole('button', { name: /^Preview$/ }).click();
 
-    // We’re now inside the Player (EscapeRoomPlayer)
+    // We're now inside the Player (EscapeRoomPlayer)
     // Timer block: shows "Time Remaining" and a mm:ss value
     await expect(page.getByText('Time Remaining')).toBeVisible();
-    // timer value next to the clock icon should look like 2 digits:2 digits
-    const timerText = await page.locator('text=Time Remaining').locator('..').locator('..').textContent();
-    expect(timerText).toMatch(/\b\d{2}:\d{2}\b/);
+    // timer value should be in the format mm:ss (2 digits:2 digits)
+    const timerElement = page.locator('.text-green-400').filter({ hasText: /\d{2}:\d{2}/ });
+    await expect(timerElement).toBeVisible();
+    const timerText = await timerElement.textContent();
+    expect(timerText).toMatch(/\d{2}:\d{2}/);
 
     // Stage indicator: "Stage 1 of N"
     await expect(page.getByText(/Stage\s+\d+\s+of\s+\d+/i)).toBeVisible();
