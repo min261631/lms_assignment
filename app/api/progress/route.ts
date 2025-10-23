@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-// import { prisma } from "@/app/lib/prisma"; // Uncomment when Progress model is added
+import { prisma } from "@/app/lib/prisma";
 import { context, trace, SpanStatusCode } from "@opentelemetry/api";
 
 export const runtime = "nodejs";
@@ -22,26 +22,44 @@ function jsonWithCors(data: unknown, init: ResponseInit & { status?: number } = 
   return NextResponse.json(data, { ...init, headers: { ...CORS, ...(init.headers || {}) } });
 }
 
-// GET /api/progress?userId=xxx
+type ProgressStatus = "PENDING" | "CORRECT" | "INCORRECT" | "COMPLETED";
+
+type ProgressBody = {
+  userId: string;
+  roomId: string;
+  stageKey: string;
+  submittedAnswer?: string | null;
+  result?: string | null;
+  score?: number | null;
+  status?: ProgressStatus;
+  timeRemainingS?: number | null;
+};
+
+// GET /api/progress?userId=xxx[&roomId=yyy]
 export async function GET(req: NextRequest) {
   return await tracer.startActiveSpan("progress.get", async (span) => {
     try {
       span.setAttribute("http.method", "GET");
       const url = new URL(req.url);
       const userId = url.searchParams.get("userId") || "";
+      const roomId = url.searchParams.get("roomId") || "";
 
-      span.setAttribute("query.userId", userId || "");      
+      span.setAttribute("query.userId", userId);
+      if (roomId) span.setAttribute("query.roomId", roomId);
 
       if (!userId) {
         span.setStatus({ code: SpanStatusCode.ERROR, message: "Missing userId" });
         return jsonWithCors({ error: "userId query parameter is required" }, { status: 400 });
       }
 
-      // Placeholder until Prisma model exists:
-      // const rows = await context.with(trace.setSpan(context.active(), span), () =>
-      //   prisma.progress.findMany({ where: { userId }, orderBy: { updatedAt: "desc" } })
-      // );
-      const rows: unknown[] = [];
+      const where = roomId ? { userId, roomId } : { userId };
+
+      const rows = await context.with(trace.setSpan(context.active(), span), () =>
+        prisma.progress.findMany({
+          where,
+          orderBy: [{ createdAt: "asc" }],
+        })
+      );
 
       return jsonWithCors({ data: rows }, { status: 200 });
     } catch (error) {
@@ -60,39 +78,65 @@ export async function POST(req: NextRequest) {
     try {
       span.setAttribute("http.method", "POST");
 
-      const body = await req.json().catch(() => ({}));
-      const { userId, stageKey, status, score } = body || {};
+      const body = (await req.json().catch(() => ({}))) as Partial<ProgressBody>;
+      const {
+        userId,
+        roomId,
+        stageKey,
+        submittedAnswer = null,
+        result = null,
+        score = null,
+        status = "PENDING",
+        timeRemainingS = null,
+      } = body;
 
       const payloadSize = JSON.stringify(body || {}).length;
       span.setAttribute("payload.size_bytes", payloadSize);
       span.setAttribute("progress.userId", userId ?? "");
+      span.setAttribute("progress.roomId", roomId ?? "");
       span.setAttribute("progress.stageKey", stageKey ?? "");
       span.setAttribute("progress.status", status ?? "");
-      if (typeof score !== "undefined") span.setAttribute("progress.score", Number(score) || 0);
 
-      if (!userId || !stageKey || !status) {
+      if (!userId || !roomId || !stageKey) {
         span.setStatus({ code: SpanStatusCode.ERROR, message: "Validation error" });
         return jsonWithCors(
-          { error: "Missing required fields: userId, stageKey, status" },
+          { error: "Missing required fields: userId, roomId, stageKey" },
           { status: 400 }
         );
       }
 
-      // When you add the model, replace the mock with Prisma:
-      // const created = await context.with(trace.setSpan(context.active(), span), () =>
-      //   prisma.progress.create({ data: { userId, stageKey, status, score } })
-      // );
+      // Basic enum guard (keeps DB clean)
+      const allowed: ProgressStatus[] = ["PENDING", "CORRECT", "INCORRECT", "COMPLETED"];
+      const safeStatus: ProgressStatus = allowed.includes(status as ProgressStatus)
+        ? (status as ProgressStatus)
+        : "PENDING";
 
-      const progress = {
-        id: crypto.randomUUID(),
-        userId,
-        stageKey,
-        status,
-        score: typeof score === "number" ? score : null,
-        updatedAt: new Date().toISOString(),
-      };
+      const row = await context.with(trace.setSpan(context.active(), span), () =>
+        prisma.progress.upsert({
+          where: {
+            userId_roomId_stageKey: { userId, roomId, stageKey },
+          },
+          create: {
+            userId,
+            roomId,
+            stageKey,
+            submittedAnswer,
+            result,
+            score: typeof score === "number" ? score : null,
+            status: safeStatus,
+            timeRemainingS: typeof timeRemainingS === "number" ? timeRemainingS : null,
+          },
+          update: {
+            submittedAnswer,
+            result,
+            score: typeof score === "number" ? score : null,
+            status: safeStatus,
+            timeRemainingS: typeof timeRemainingS === "number" ? timeRemainingS : null,
+          },
+        })
+      );
 
-      return jsonWithCors(progress, { status: 201 });
+      return jsonWithCors(row, { status: 201 });
     } catch (error) {
       const message = (error as Error)?.message || "Unknown error";
       span.recordException(error as Error);
