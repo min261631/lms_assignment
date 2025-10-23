@@ -18,5 +18,36 @@ model EscapeRoom {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
+  // Relation to progress records (one-to-many)
+  progresses      Progress[]
+
   @@index([createdAt])
+}
+
+// Enum for progress status
+enum ProgressStatus {
+  PENDING
+  CORRECT
+  INCORRECT
+  COMPLETED
+}
+
+model Progress {
+  id              String          @id @default(uuid())
+  userId          String
+  roomId          String
+  stageKey        String
+  submittedAnswer String?
+  result          String?
+  score           Int?
+  status          ProgressStatus  @default(PENDING)
+  timeRemainingS  Int?
+
+  // Link to EscapeRoom
+  escapeRoom      EscapeRoom      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@unique([userId, roomId, stageKey])
 }
